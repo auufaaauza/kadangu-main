@@ -54,32 +54,32 @@ const HomePage = () => {
 
       <div className="overflow-x-hidden">
         {/* Banner Section */}
-        <section className="container mx-auto px-4 mt-4 sm:mt-6 mb-6 sm:mb-8">
+        <section className="container mx-auto px-4 mt-4 sm:mt-6 mb-3 sm:mb-4">
           <AutoCarousel banners={heroBanners} />
         </section>
 
         {/* Feature Menu Section */}
-        <section className="container mx-auto px-4 mb-8 sm:mb-10 md:mb-12">
+        <section className="container mx-auto px-4 mb-4 sm:mb-5">
           <FeatureMenu />
         </section>
 
-        {/* ================= Mascot Banner Section ================= */}
-        <section className="container mx-auto px-4 section-spacing">
+        {/* Mascot Banner Section */}
+        <section className="container mx-auto px-4 mb-4 sm:mb-5">
           <MascotBanner />
         </section>
 
-        {/* ================= Events Section ================= */}
-        <section className="container mx-auto px-4 section-spacing">
+        {/* Events Section */}
+        <section className="container mx-auto px-4 mb-4 sm:mb-5">
           <FeaturedEvents />
         </section>
 
-        {/* ================= Artists Section ================= */}
-        <section className="container mx-auto px-4 section-spacing">
+        {/* Artists Section */}
+        <section className="container mx-auto px-4 mb-4 sm:mb-5">
           <FeaturedArtists />
         </section>
 
-        {/* ================= News Section ================= */}
-        <section className="container mx-auto px-4 section-spacing">
+        {/* News Section */}
+        <section className="container mx-auto px-4 mb-4 sm:mb-5">
           <NewsSection />
         </section>
 

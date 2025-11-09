@@ -13,7 +13,7 @@ const Footer = () => {
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.2 }}
-      className="bg-[hsl(var(--primary))] text-white mt-auto pb-20 sm:pb-24"
+      className="bg-[hsl(var(--primary))] text-white mt-auto pb-5 sm:pb-6"
     >
       <div className="container mx-auto px-4 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
