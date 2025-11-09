@@ -11,19 +11,19 @@ const NewsSection = () => {
       title: 'Festival Seni Budaya Nusantara Kembali Digelar',
       excerpt: 'Setelah dua tahun vakum, festival seni budaya terbesar di Indonesia kembali hadir dengan konsep hybrid...',
       date: '2 hari yang lalu',
-      image: 'https://images.unsplash.com/photo-1578900368267-d34e18c1abd8?q=80&w=2070&auto=format&fit=crop'
+      image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800&auto=format&fit=crop'
     },
     {
       title: 'Seniman Muda Indonesia Raih Penghargaan Internasional',
       excerpt: 'Prestasi membanggakan dari seniman muda Indonesia di kancah internasional dalam bidang seni digital...',
       date: '3 hari yang lalu',
-      image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=2071&auto=format&fit=crop'
+      image: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&auto=format&fit=crop'
     },
     {
       title: 'Workshop Seni Rupa Gratis untuk Pelajar',
       excerpt: 'Program pelatihan seni rupa gratis dibuka untuk pelajar di seluruh Indonesia untuk menumbuhkan bakat...',
       date: '5 hari yang lalu',
-      image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1945&auto=format&fit=crop'
+      image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&auto=format&fit=crop'
     },
   ];
 

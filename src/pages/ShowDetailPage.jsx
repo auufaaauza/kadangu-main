@@ -146,7 +146,7 @@ const ShowDetailPage = () => {
 
   const handleDownloadQR = () => {
     const link = document.createElement('a');
-    link.href = 'https://images.unsplash.com/photo-1593433693633-f04c7756b3bf'; 
+    link.href = 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&auto=format&fit=crop'; 
     link.download = 'QRIS_Pembayaran.png';
     document.body.appendChild(link);
     link.click();
@@ -258,7 +258,7 @@ const ShowDetailPage = () => {
               Kembali
             </Button>
             <div className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl">
-                <img alt={show.title} className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1615754890620-ef46bf5ff151" />
+                <img alt={show.title} className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&auto=format&fit=crop" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20"></div>
                  <Button variant="ghost" size="icon" onClick={() => navigate(-1)} className="absolute top-4 left-4 text-white bg-black/20 md:hidden">
                     <ChevronLeft className="w-6 h-6" />
@@ -410,7 +410,7 @@ const ShowDetailPage = () => {
                            <div className="flex flex-col items-center gap-4">
                                 <p className="text-sm text-center">Pindai kode QR di bawah ini dengan aplikasi pembayaran pilihan Anda.</p>
                                 <div className="p-2 border rounded-lg bg-white">
-                                    <img alt="QRIS payment code" className="w-48 h-48" src="https://images.unsplash.com/photo-1595079676339-1534801ad6cf" />
+                                    <img alt="QRIS payment code" className="w-48 h-48" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=400&auto=format&fit=crop" />
                                 </div>
                                 <Button variant="outline" onClick={handleDownloadQR}>
                                     <Download className="w-4 h-4 mr-2" />

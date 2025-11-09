@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Ticket } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Ticket, ChevronLeft, ChevronRight } from "lucide-react";
 
 const FeaturedEvents = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const autoSlideRef = useRef(null);
 
   const events = [
     {
@@ -77,151 +74,142 @@ const FeaturedEvents = () => {
     },
   ];
 
-  const totalSlides = events.length;
-
   const nextSlide = () => {
-    setIsTransitioning(true);
-    setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    setTimeout(() => setIsTransitioning(false), 500);
+    setCurrentSlide((prev) => (prev + 1) % events.length);
   };
 
-  useEffect(() => {
-    autoSlideRef.current = setInterval(nextSlide, 4000);
-    return () => clearInterval(autoSlideRef.current);
-  }, []);
-
-  const buttonVariants = {
-    rest: { y: 0, scale: 1 },
-    hover: { y: -3, scale: 1.05 },
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + events.length) % events.length);
   };
-
-  const handleAction = (id) => navigate(`/shows/${id}`);
 
   return (
-    <section className="py-12 sm:py-16 md:py-20 bg-gray-50 overflow-hidden">
-      <div className="container mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 sm:mb-12 px-4 gap-4"
-        >
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+    <section className="py-8 sm:py-12 bg-gray-50">
+      <div className="container mx-auto px-4">
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
             Pertunjukan Unggulan
           </h2>
-          <Button
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto mb-4">
+            Jelajahi berbagai pertunjukan seni dan budaya terbaik dari seluruh Indonesia. 
+            Temukan pengalaman tak terlupakan bersama seniman lokal berbakat.
+          </p>
+          <button
             onClick={() => navigate("/shows")}
-            className="bg-primary/10 text-primary hover:bg-primary/20 font-bold text-sm sm:text-base px-4 sm:px-6"
+            className="bg-primary/10 text-primary hover:bg-primary/20 font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors inline-block"
           >
-            Lihat Semua
-          </Button>
-        </motion.div>
-
-        {/* Desktop Grid */}
-        <div className="hidden sm:grid sm:grid-cols-4 gap-4 sm:gap-6 px-4">
-          {events.slice(0, 8).map((event) => (
-            <motion.div
-              key={event.id}
-              className="bg-white rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col group overflow-hidden"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="relative w-full aspect-[2/3] overflow-hidden">
-                <img
-                  alt={event.title}
-                  src={event.image}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                <div className="absolute top-0 left-0 p-3 text-white">
-                  <span className="text-xs bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full font-semibold">
-                    {event.category}
-                  </span>
-                </div>
-                <div className="absolute bottom-0 left-0 p-4 text-white">
-                  <h3 className="font-bold text-lg sm:text-xl drop-shadow-lg line-clamp-2">
-                    {event.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm font-medium text-white/80 mt-1">
-                    {event.date}
-                  </p>
-                </div>
-              </div>
-              <motion.button
-                onClick={() => handleAction(event.id)}
-                className="w-full bg-[hsl(var(--primary))] text-white font-bold text-sm sm:text-base py-4 sm:py-5 flex items-center justify-center"
-                variants={buttonVariants}
-                initial="rest"
-                whileHover="hover"
-              >
-                <Ticket className="w-5 h-5 mr-2" /> BELI TIKET
-              </motion.button>
-            </motion.div>
-          ))}
+            Lihat Semua Pertunjukan
+          </button>
         </div>
 
-        {/* Mobile Auto Carousel */}
-        <div className="sm:hidden relative px-6">
-          <div className="overflow-hidden rounded-2xl">
-            <div
-              className={`flex transition-transform duration-700 ease-in-out`}
-              style={{
-                transform: `translateX(-${currentSlide * 100}%)`,
-              }}
+        {/* Mobile & Tablet: Carousel */}
+        <div className="lg:hidden relative">
+          <div className="overflow-hidden">
+            <motion.div
+              className="flex"
+              animate={{ x: `-${currentSlide * 100}%` }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-              {events.map((event, index) => (
-                <div
-                  key={event.id}
-                  className="w-full flex-shrink-0 px-1"
-                  style={{
-                    flexBasis: "100%",
-                  }}
-                >
-                  <motion.div
-                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col overflow-hidden mb-4"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <div className="relative w-full aspect-[4/5] overflow-hidden">
+              {events.map((event) => (
+                <div key={event.id} className="w-full flex-shrink-0 px-2">
+                  <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div className="relative w-full aspect-[16/9]">
                       <img
-                        alt={event.title}
                         src={event.image}
+                        alt={event.title}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
-                      <div className="absolute top-0 left-0 p-3 text-white">
-                        <span className="text-xs bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full font-semibold">
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                      <div className="absolute top-3 left-3">
+                        <span className="bg-primary text-white text-xs px-3 py-1 rounded-full font-semibold">
                           {event.category}
                         </span>
                       </div>
-                      <div className="absolute bottom-0 left-0 p-4 text-white">
-                        <h3 className="font-bold text-base drop-shadow-lg line-clamp-2">
+                      <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                        <h3 className="font-bold text-lg mb-2 line-clamp-2">
                           {event.title}
                         </h3>
-                        <p className="text-xs font-medium text-white/80 mt-1">
-                          {event.date}
-                        </p>
+                        <p className="text-sm text-white/90">{event.date}</p>
                       </div>
                     </div>
-                    <motion.button
-                      onClick={() => handleAction(event.id)}
-                      className="w-full bg-[hsl(var(--primary))] text-white font-bold text-sm py-4 flex items-center justify-center"
-                      variants={buttonVariants}
-                      initial="rest"
-                      whileHover="hover"
-                    >
-                      <Ticket className="w-4 h-4 mr-1" /> BELI TIKET
-                    </motion.button>
-                  </motion.div>
+                    <div className="p-4">
+                      <button
+                        onClick={() => navigate(`/shows/${event.id}`)}
+                        className="w-full bg-primary text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
+                      >
+                        <Ticket className="w-5 h-5" />
+                        BELI TIKET
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ))}
-            </div>
+            </motion.div>
           </div>
+
+          {/* Navigation */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center z-10 hover:bg-gray-100"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center z-10 hover:bg-gray-100"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+
+          {/* Indicators */}
+          <div className="flex justify-center gap-2 mt-6">
+            {events.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                className={`h-2 rounded-full transition-all ${
+                  index === currentSlide
+                    ? "w-8 bg-primary"
+                    : "w-2 bg-gray-300"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: 3 Column Grid */}
+        <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+          {events.slice(0, 3).map((event) => (
+            <div key={event.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+              <div className="relative w-full aspect-[2/3]">
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute top-3 left-3">
+                  <span className="bg-primary text-white text-xs px-3 py-1.5 rounded-full font-semibold">
+                    {event.category}
+                  </span>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                  <h3 className="font-bold text-base mb-1.5 line-clamp-2">
+                    {event.title}
+                  </h3>
+                  <p className="text-xs text-white/90">{event.date}</p>
+                </div>
+              </div>
+              <div className="p-4">
+                <button
+                  onClick={() => navigate(`/shows/${event.id}`)}
+                  className="w-full bg-primary text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
+                >
+                  <Ticket className="w-4 h-4" />
+                  BELI TIKET
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

@@ -7,10 +7,10 @@ const FeaturedArtists = () => {
   const { toast } = useToast();
 
   const artists = [
-    { name: 'Sanggar Tari Mekar', category: 'Tari Tradisional', followers: '2.5K', image: 'https://images.unsplash.com/photo-1517471572468-bf83e63eae76?q=80&w=2070&auto=format&fit=crop' },
-    { name: 'Komunitas Teater Muda', category: 'Teater', followers: '1.8K', image: 'https://images.unsplash.com/photo-1507924538820-ede94a04019d?q=80&w=2070&auto=format&fit=crop' },
-    { name: 'Pelukis Nusantara', category: 'Seni Rupa', followers: '3.2K', image: 'https://images.unsplash.com/photo-1541701494587-cb58502866ab?q=80&w=2070&auto=format&fit=crop' },
-    { name: 'Gamelan Pusaka', category: 'Musik Tradisional', followers: '1.5K', image: 'https://images.unsplash.com/photo-1550291652-ea9114a47b1?q=80&w=2070&auto=format&fit=crop' },
+    { name: 'Sanggar Tari Mekar', category: 'Tari Tradisional', followers: '2.5K', image: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=800&auto=format&fit=crop' },
+    { name: 'Komunitas Teater Muda', category: 'Teater', followers: '1.8K', image: 'https://images.unsplash.com/photo-1503095396549-807759245b35?w=800&auto=format&fit=crop' },
+    { name: 'Pelukis Nusantara', category: 'Seni Rupa', followers: '3.2K', image: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&auto=format&fit=crop' },
+    { name: 'Gamelan Pusaka', category: 'Musik Tradisional', followers: '1.5K', image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800&auto=format&fit=crop' },
   ];
 
   const handleArtistClick = () => {
