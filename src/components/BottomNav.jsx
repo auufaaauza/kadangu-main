@@ -15,14 +15,6 @@ const BottomNav = () => {
     if (location.pathname !== path) {
       navigate(path);
     }
-    
-    const notImplementedPaths = ['/explore', '/wishlist', '/profile'];
-    if (notImplementedPaths.includes(path)) {
-      toast({
-        title: "🚧 Halaman ini dalam pengembangan",
-        description: "Fitur penuh akan segera hadir. Anda bisa request di prompt berikutnya! 🚀",
-      });
-    }
   }
 
   const navItems = [
@@ -34,10 +26,10 @@ const BottomNav = () => {
   ];
 
   return (
-    <div className="fixed bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 z-40">
+    <div className="fixed bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 z-40">
       <div className="max-w-md mx-auto">
         <div className="bg-transparent backdrop-blur-xl rounded-3xl border border-slate-700/30 shadow-2xl shadow-black/20">
-          <div className="flex items-end justify-around h-20 px-4">
+          <div className="flex items-end justify-around h-16 sm:h-[70px] px-2 sm:px-3">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const isHome = item.name === 'Home';
@@ -47,21 +39,21 @@ const BottomNav = () => {
                 key={item.name}
                 onClick={(e) => handleNavigation(e, item.path)}
                 whileTap={{ scale: 0.90 }}
-                className={`relative flex flex-col items-center pt-4 pb-2 space-y-1 flex-1 transition-all duration-300 ${
+                className={`relative flex flex-col items-center pt-3 pb-1.5 space-y-0.5 flex-1 transition-all duration-300 ${
                   isHome ? '' : (isActive ? 'text-[hsl(var(--primary))]' : 'text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--accent))]')
                 }`}
               >
                 {isHome ? (
                   <motion.div 
                     whileHover={{ scale: 1.1, rotate: 5 }}
-                    className="-mt-12 w-20 h-20 bg-[hsl(var(--primary))] rounded-full flex items-center justify-center shadow-xl shadow-[hsl(var(--primary))]/50 ring-4 ring-[hsl(var(--border))]"
+                    className="-mt-10 sm:-mt-11 w-14 h-14 sm:w-16 sm:h-16 bg-[hsl(var(--primary))] rounded-full flex items-center justify-center shadow-lg shadow-[hsl(var(--primary))]/50 ring-4 ring-[hsl(var(--border))]"
                   >
-                    <item.icon className="w-9 h-9 text-white" />
+                    <item.icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                   </motion.div>
                 ) : (
                   <>
-                    <item.icon className={`w-7 h-7 ${isActive ? 'stroke-[2.5]' : ''}`} />
-                    <span className={`text-xs font-bold ${isActive ? 'text-[hsl(var(--primary))]' : 'text-[hsl(var(--muted-foreground))]'}`}>{item.name}</span>
+                    <item.icon className={`w-5 h-5 sm:w-6 sm:h-6 ${isActive ? 'stroke-[2.5]' : ''}`} />
+                    <span className={`text-[10px] sm:text-xs font-semibold ${isActive ? 'text-[hsl(var(--primary))]' : 'text-[hsl(var(--muted-foreground))]'}`}>{item.name}</span>
                   </>
                 )}
                  {isActive && !isHome && (

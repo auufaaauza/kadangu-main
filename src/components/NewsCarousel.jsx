@@ -1,13 +1,12 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination } from "swiper/modules";
-import { useToast } from '@/components/ui/use-toast';
-import "swiper/css";
-import "swiper/css/pagination";
+import { Autoplay } from "swiper/modules";
+import { useToast } from "@/components/ui/use-toast";
+import "swiper/css"; // ⚡ cukup import ini saja, tanpa pagination
 
 const NewsCarousel = ({ newsItems }) => {
   const { toast } = useToast();
-  
+
   const handleReadMore = () => {
     toast({
       title: "🚧 Halaman detail berita belum ada!",
@@ -17,10 +16,9 @@ const NewsCarousel = ({ newsItems }) => {
   return (
     <div className="px-4 py-6">
       <Swiper
-        modules={[Autoplay, Pagination]}
+        modules={[Autoplay]}
         spaceBetween={20}
         slidesPerView={1}
-        pagination={{ clickable: true }}
         autoplay={{ delay: 2500, disableOnInteraction: false }}
         loop={true}
         breakpoints={{
@@ -32,7 +30,7 @@ const NewsCarousel = ({ newsItems }) => {
       >
         {newsItems?.map((item, index) => (
           <SwiperSlide key={index}>
-            <div 
+            <div
               className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 flex flex-col cursor-pointer group"
               onClick={handleReadMore}
             >
@@ -44,7 +42,9 @@ const NewsCarousel = ({ newsItems }) => {
               <span className="text-sm text-[hsl(var(--primary))] bg-[hsl(var(--secondary))]/20 py-1 px-3 rounded-full self-start font-semibold mb-2">
                 {item.category}
               </span>
-              <h3 className="font-bold text-lg mb-2 text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--primary))] transition-colors">{item.title}</h3>
+              <h3 className="font-bold text-lg mb-2 text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--primary))] transition-colors">
+                {item.title}
+              </h3>
               <p className="text-gray-600 text-sm flex-grow">{item.excerpt}</p>
               <div className="flex items-center justify-between text-xs text-gray-500 mt-3">
                 <span>Oleh {item.author}</span>

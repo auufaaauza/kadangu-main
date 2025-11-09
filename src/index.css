@@ -129,3 +129,45 @@
   transform: scale(0.95);
   opacity: 0.8;
 }
+
+/* ======================================================
+   GLOBAL SECTION SPACING UTILITIES — Kadangu Design System
+   ====================================================== */
+
+.section-spacing {
+  margin-bottom: 2rem;        /* default: mb-8 */
+}
+
+@media (min-width: 640px) {
+  .section-spacing {
+    margin-bottom: 3rem;      /* sm:mb-12 */
+  }
+}
+
+@media (min-width: 768px) {
+  .section-spacing {
+    margin-bottom: 4rem;      /* md:mb-16 */
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-spacing {
+    margin-bottom: 5rem;      /* lg:mb-20 */
+  }
+}
+
+.section-spacing-lg {
+  margin-bottom: 3rem;        /* untuk hero/banner section */
+}
+
+@media (min-width: 640px) {
+  .section-spacing-lg {
+    margin-bottom: 4rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-spacing-lg {
+    margin-bottom: 6rem;
+  }
+}

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle, Home, Ticket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
 const PaymentSuccessPage = () => {
@@ -16,8 +15,7 @@ const PaymentSuccessPage = () => {
                 <title>Menunggu Verifikasi - Kadangu</title>
                 <meta name="description" content="Konfirmasi unggah bukti pembayaran berhasil." />
             </Helmet>
-            <div className="min-h-screen bg-white flex flex-col">
-                <Navbar />
+            <div className="w-full bg-white flex flex-col">
                 <main className="flex-grow flex items-center justify-center container mx-auto px-4">
                     <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}

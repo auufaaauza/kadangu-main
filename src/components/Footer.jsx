@@ -1,14 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, Instagram, Facebook, Twitter, Linkedin, Youtube } from 'lucide-react';
+import { Music2Icon, Instagram, Facebook, Twitter, Linkedin, Youtube } from 'lucide-react';
 
 const socialLinks = [
-  { name: 'WhatsApp', icon: MessageCircle, href: '#' },
-  { name: 'Instagram', icon: Instagram, href: '#' },
-  { name: 'Facebook', icon: Facebook, href: '#' },
-  { name: 'Twitter', icon: Twitter, href: '#' },
-  { name: 'LinkedIn', icon: Linkedin, href: '#' },
-  { name: 'YouTube', icon: Youtube, href: '#' },
+  { name: 'Tiktok', icon: Music2Icon, href: '#' },
+  { name: 'Instagram', icon: Instagram, href: '#' }
 ];
 
 const Footer = () => {
@@ -23,7 +19,7 @@ const Footer = () => {
         <div className="flex items-center justify-between">
           {/* Copyright Text - Left */}
           <p className="text-xs sm:text-sm whitespace-nowrap">
-            © 2025 Artatik. Hak Cipta Dilindungi.
+            © 2025 Kadangu. Hak Cipta Dilindungi.
           </p>
           
           {/* Social Media Icons - Right */}

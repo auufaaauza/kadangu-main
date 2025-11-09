@@ -4,8 +4,6 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Search, Ticket } from 'lucide-react';
-import Navbar from '@/components/Navbar';
-import BottomNav from '@/components/BottomNav';
 import Footer from '@/components/Footer';
 import ShowsFilter from '@/components/ShowsFilter';
 import AutoCarousel from '@/components/sections/AutoCarousel'; // Import the carousel
@@ -57,9 +55,8 @@ const ShowsPage = () => {
         <title>Pertunjukan Seni - Kadangu</title>
         <meta name="description" content="Jelajahi beragam pertunjukan seni daerah di Kadangu. Temukan acara musik, tari, teater, dan lainnya." />
       </Helmet>
-      <div className="min-h-screen bg-gray-50 pb-32">
-        <Navbar />
-        <main className="container mx-auto px-4 mt-8">
+      <div className="w-full bg-gray-50">
+        <div className="container mx-auto px-4 mt-6 md:mt-8">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -124,12 +121,11 @@ const ShowsPage = () => {
               </motion.div>
             ))}
           </motion.div>
-        </main>
-        
-        <div className="mt-20">
-            <Footer />
         </div>
-        <BottomNav />
+        
+        <div className="mt-16 md:mt-20">
+          <Footer />
+        </div>
       </div>
     </>
   );

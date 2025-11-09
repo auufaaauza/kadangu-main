@@ -11,8 +11,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Navbar from '@/components/Navbar';
-import BottomNav from '@/components/BottomNav';
 import Footer from '@/components/Footer';
 import { cn } from '@/lib/utils';
 
@@ -252,9 +250,8 @@ const ShowDetailPage = () => {
         <title>{show.title} - Beli Tiket di Kadangu</title>
         <meta name="description" content={`Beli tiket untuk pertunjukan ${show.title}. Info jadwal, kursi, dan pembayaran.`} />
       </Helmet>
-      <div className="min-h-screen bg-white pb-32">
-        <Navbar />
-        <main className="container mx-auto px-4 mt-8">
+      <div className="w-full bg-white">
+        <div className="container mx-auto px-4 mt-6 md:mt-8">
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4 hidden md:inline-flex">
               <ChevronLeft className="w-4 h-4 mr-2" />
@@ -332,11 +329,11 @@ const ShowDetailPage = () => {
               </div>
             </div>
           </motion.div>
-        </main>
-        <div className="mt-20">
+        </div>
+        
+        <div className="mt-16 md:mt-20">
           <Footer />
         </div>
-        <BottomNav />
       </div>
 
       <Dialog open={isBuyerDataOpen} onOpenChange={setIsBuyerDataOpen}>

@@ -17,6 +17,12 @@ const buttonVariants = cva(
           'bg-secondary text-secondary-foreground hover:bg-secondary/80',
 				ghost: 'hover:bg-accent hover:text-accent-foreground',
 				link: 'text-primary underline-offset-4 hover:underline',
+
+				// 🩷 Tambahan baru untuk kategori filter Kadangu
+				category:
+					'border border-gray-300 bg-white text-gray-800 font-semibold rounded-full px-5 py-2.5 transition-all duration-300 hover:border-[#E62E7A] hover:text-[#E62E7A]',
+				categoryActive:
+					'bg-[#E62E7A] text-white border border-[#E62E7A] font-semibold rounded-full px-5 py-2.5 shadow-md transition-all duration-300',
 			},
 			size: {
 				default: 'h-10 px-4 py-2',
