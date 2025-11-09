@@ -55,9 +55,10 @@ const HomePage = () => {
         <Navbar />
         
         <main>
-         <div className='container mx-auto px-4'> 
-          <AutoCarousel banners={heroBanners} />
-          </div>
+         <div className='container mx-auto px-4 mb-20 md:mb-24'>
+  <AutoCarousel banners={heroBanners} />
+</div>
+
           <div className="container mx-auto px-4">
             <FeatureMenu />
             <MascotBanner />

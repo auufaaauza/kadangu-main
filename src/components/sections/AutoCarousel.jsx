@@ -1,73 +1,110 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const BannerSlide = ({ banner, index, total, isActive }) => {
+const BannerSlide = ({ banner, isCenter }) => {
   const [loading, setLoading] = useState(true);
   const imageRef = useRef(null);
+  const overlayRef = useRef(null);
+  const containerRef = useRef(null);
 
-  const handleClick = () => {
-    if (banner.route) window.location.href = banner.route;
-    else if (banner.href) window.open(banner.href, "_blank");
-  };
-
-  // Parallax zoom effect saat slide aktif
+  // Efek scale container & highlight tengah
   useEffect(() => {
-    if (imageRef.current) {
-      const img = imageRef.current;
-      
-      if (isActive) {
-        // Reset ke scale normal terlebih dahulu
-        img.style.transform = 'scale(1)';
-        img.style.transition = 'transform 300ms ease-out';
-        
-        // Animate zoom dengan smooth transition setelah delay
-        const animateZoom = () => {
-          img.style.transition = 'transform 4800ms cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-          img.style.transform = 'scale(1.08)';
-        };
-        
-        // Delay untuk smooth entrance
-        const timer = setTimeout(animateZoom, 200);
-        
-        return () => {
-          clearTimeout(timer);
-        };
-      } else {
-        // Reset untuk slide yang tidak aktif
-        img.style.transition = 'transform 400ms ease-out';
-        img.style.transform = 'scale(1)';
-      }
+    if (!imageRef.current || !overlayRef.current || !containerRef.current)
+      return;
+    const img = imageRef.current;
+    const overlay = overlayRef.current;
+    const container = containerRef.current;
+
+    if (isCenter) {
+      container.style.transform = "scale(1.05)";
+      container.style.opacity = "1";
+      container.style.transition =
+        "transform 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 600ms ease";
+
+      img.style.transition = "transform 4s ease-out, filter 1s ease-out";
+      img.style.transform = "scale(1.08)";
+      img.style.filter = "brightness(1.05) contrast(1.1)";
+      overlay.style.background = "rgba(0,0,0,0)";
+      container.style.boxShadow = "0 20px 40px rgba(0,0,0,0.12)";
+    } else {
+      container.style.transform = "scale(0.9)";
+      container.style.opacity = "0.7";
+      container.style.transition =
+        "transform 800ms ease-out, opacity 600ms ease";
+      img.style.transition = "transform 1s ease-out, filter 0.8s ease-out";
+      img.style.transform = "scale(1)";
+      img.style.filter = "brightness(0.75) contrast(0.9)";
+      overlay.style.background =
+        "linear-gradient(to bottom, rgba(0,0,0,0.25), rgba(0,0,0,0.45))";
+      container.style.boxShadow = "0 12px 20px rgba(0,0,0,0.06)";
     }
-  }, [isActive]);
+  }, [isCenter]);
+
+  // Parallax motion kiri-kanan halus untuk slide tengah
+  useEffect(() => {
+    if (!imageRef.current) return;
+    const img = imageRef.current;
+    let anim;
+    if (isCenter) {
+      let pos = 0;
+      const animate = () => {
+        pos += 0.04;
+        const offset = Math.sin(pos) * 10; // 10px kiri-kanan
+        img.style.transform = `scale(1.08) translateX(${offset}px)`;
+        anim = requestAnimationFrame(animate);
+      };
+      anim = requestAnimationFrame(animate);
+    }
+    return () => cancelAnimationFrame(anim);
+  }, [isCenter]);
 
   return (
     <div
-      className="relative w-full group cursor-pointer transition-transform duration-500"
-      onClick={handleClick}
+      ref={containerRef}
+      className="relative w-full transition-transform duration-700 ease-out cursor-pointer select-none overflow-visible"
+      onClick={() => {
+        if (banner.route) window.location.href = banner.route;
+        else if (banner.href) window.open(banner.href, "_blank");
+      }}
+      style={{
+        willChange: "transform, opacity",
+        borderRadius: "1rem",
+      }}
     >
-      <div className="relative w-full overflow-hidden rounded-xl md:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300">
-        <div className="relative w-full aspect-[16/9] bg-gray-100 overflow-hidden">
-          {loading && (
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-pulse rounded-xl md:rounded-2xl" />
-          )}
-          <img
-            ref={imageRef}
-            src={banner.image}
-            alt={banner.title}
-            className={`w-full h-full object-cover transition-opacity duration-500 banner-image ${
-              loading ? "opacity-0" : "opacity-100"
-            }`}
-            onLoad={() => setLoading(false)}
-            loading={index < 3 ? "eager" : "lazy"}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        </div>
+      <div
+        className="relative w-full aspect-[16/9] rounded-xl overflow-hidden bg-transparent"
+        style={{
+          WebkitMaskImage:
+            "radial-gradient(white 99%, rgba(255,255,255,0.5) 100%)",
+          maskImage:
+            "radial-gradient(white 99%, rgba(255,255,255,0.5) 100%)",
+          transition: "box-shadow 0.8s ease",
+        }}
+      >
+        {loading && (
+          <div className="absolute inset-0 bg-gray-300 animate-pulse" />
+        )}
 
+        <img
+          ref={imageRef}
+          src={banner.image}
+          alt={banner.title}
+          onLoad={() => setLoading(false)}
+          className={`w-full h-full object-cover transition-opacity duration-500 ${
+            loading ? "opacity-0" : "opacity-100"
+          }`}
+          draggable={false}
+        />
+
+        {/* Overlay lembut */}
+        <div
+          ref={overlayRef}
+          className="absolute inset-0 transition-all duration-700 pointer-events-none"
+        />
+
+        {/* Text content */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 md:p-4">
           <p className="text-white text-sm md:text-base font-semibold line-clamp-2 drop-shadow-md">
             {banner.title}
@@ -87,88 +124,66 @@ const Banner = ({ banners = [] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef(null);
 
-  // Fallback data jika banners tidak ada atau kosong
+  // Fallback banners
   const defaultBanners = [
     {
-      image: 'https://images.unsplash.com/photo-1541515929569-17715236c398?q=80&w=2070&auto=format&fit=crop',
-      title: 'Yuk, Solo Travel!',
-      category: 'Wisata Seni',
+      image:
+        "https://images.unsplash.com/photo-1541515929569-17715236c398?q=80&w=2070&auto=format&fit=crop",
+      title: "Yuk, Solo Travel!",
+      category: "Wisata Seni",
     },
     {
-      image: 'https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=2069&auto=format&fit=crop',
-      title: 'Wisata Garut',
-      category: 'Lebih Gampang, Lebih Murah',
+      image:
+        "https://images.unsplash.com/photo-1506012787146-f92b2d7d6d96?q=80&w=2069&auto=format&fit=crop",
+      title: "Wisata Garut",
+      category: "Lebih Gampang, Lebih Murah",
     },
     {
-      image: 'https://images.unsplash.com/photo-1569949381669-ecf31ae8e613?q=80&w=1992&auto=format&fit=crop',
-      title: 'Let\'s Go!',
-      category: 'With Kadangu',
+      image:
+        "https://images.unsplash.com/photo-1569949381669-ecf31ae8e613?q=80&w=1992&auto=format&fit=crop",
+      title: "Let's Go!",
+      category: "With Kadangu",
+    },
+    {
+      image:
+        "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=2069&auto=format&fit=crop",
+      title: "Pentas Teater",
+      category: "Kisah Penuh Makna",
     },
   ];
 
-  const displayBanners = banners.length > 0 ? banners : defaultBanners;
-
-  // Handle slide change untuk parallax effect
-  const handleSlideChange = (swiper) => {
-    setActiveIndex(swiper.activeIndex);
-  };
+  const displayBanners = banners.length ? banners : defaultBanners;
 
   return (
-    <div className="w-full bg-transparent relative">
-        <div className="w-full max-w-[1580px] mx-auto px-4 pt-6 md:pt-8">
-        {/* Navigation Buttons */}
-        <div className="swiper-button-prev-custom absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-white transition-all duration-300 group">
-          <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--primary))] transition-colors" />
-        </div>
-        <div className="swiper-button-next-custom absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-white transition-all duration-300 group">
-          <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-[hsl(var(--foreground))] group-hover:text-[hsl(var(--primary))] transition-colors" />
-        </div>
-
+    <div className="relative w-full bg-transparent">
+      <div className="w-full max-w-[1580px] mx-auto px-4 pt-6 md:pt-8 relative overflow-visible">
         <Swiper
           ref={swiperRef}
-          modules={[Autoplay, Pagination, Navigation]}
+          modules={[Autoplay]}
           autoplay={{
-            delay: 5000,
+            delay: 3000,
             disableOnInteraction: false,
-            pauseOnMouseEnter: true,
           }}
-          loop={true}
-          allowTouchMove={true}
-          pagination={{
-            clickable: true,
-            dynamicBullets: true,
-          }}
-          navigation={{
-            prevEl: ".swiper-button-prev-custom",
-            nextEl: ".swiper-button-next-custom",
-          }}
-          speed={800}
-          onSlideChange={handleSlideChange}
-          onSwiper={(swiper) => {
-            swiperRef.current = swiper;
-          }}
-          className="w-full banner-swiper"
+          speed={1200}
+          loop
+          centeredSlides
+          slidesPerView={3}
+          spaceBetween={30}
+          className="banner-swiper overflow-visible py-8"
           breakpoints={{
-            320: { slidesPerView: 1, spaceBetween: 12 },
-            480: { slidesPerView: 1.2, spaceBetween: 14 },
-            640: { slidesPerView: 2, spaceBetween: 16 },
-            768: { slidesPerView: 2.5, spaceBetween: 18 },
-            1024: { slidesPerView: 3, spaceBetween: 22 },
-            1280: { slidesPerView: 3, spaceBetween: 24 },
+            320: { slidesPerView: 1, spaceBetween: 16, centeredSlides: true },
+            640: { slidesPerView: 2, spaceBetween: 20, centeredSlides: true },
+            1024: { slidesPerView: 3, spaceBetween: 30, centeredSlides: true },
           }}
+          onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
         >
           {displayBanners.map((banner, i) => (
-            <SwiperSlide key={i}>
-              <BannerSlide 
-                banner={banner} 
-                index={i} 
-                total={displayBanners.length}
-                isActive={i === activeIndex}
-              />
+            <SwiperSlide key={i} className="overflow-visible">
+              <BannerSlide banner={banner} isCenter={i === activeIndex} />
             </SwiperSlide>
           ))}
         </Swiper>
-        </div>
+      </div>
     </div>
   );
 };
