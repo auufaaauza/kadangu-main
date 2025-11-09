@@ -1,0 +1,131 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /*
+    New Vibrant Palette: Tosca and Complementary Greens/Teals
+    Background: A soft, very light gray or off-white to make colors pop.
+    Foreground: A deep charcoal or dark blue for good readability.
+    Primary: A vibrant, appealing Tosca. (HSL: 175 50% 40%)
+    Secondary: A muted, lighter teal/green that complements Tosca. (HSL: 175 40% 70%)
+    Accent: A slightly brighter teal/green for highlights. (HSL: 175 60% 55%)
+  */
+  --background: 210 20% 98%; /* Very Light Gray/Off-White */
+  --foreground: 220 15% 15%; /* Deep Charcoal */
+
+  --card: 0 0% 100%;
+  --card-foreground: 220 15% 15%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 15% 15%;
+
+  --primary: 175 50% 40%; /* Vibrant Tosca */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 175 40% 70%; /* Muted Teal/Light Tosca */
+  --secondary-foreground: 220 15% 15%; /* Dark for contrast */
+  
+  --accent: 175 60% 55%; /* Slightly brighter Teal for accent */
+  --accent-foreground: 220 15% 15%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --muted: 210 20% 95%; /* Light gray for muted elements */
+  --muted-foreground: 220 10% 40%;
+
+  --border: 210 20% 90%;
+  --input: 210 20% 90%;
+  --ring: 175 50% 40%; /* Primary color for ring focus */
+
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Dark mode variables can be defined here if desired */
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+  h1 { @apply text-4xl md:text-5xl; }
+  h2 { @apply text-3xl md:text-4xl; }
+  h3 { @apply text-2xl; }
+}
+
+/* General Embla styles for all carousels */
+.embla {
+  overflow: hidden;
+}
+
+.embla__container {
+  display: flex;
+}
+
+.embla__slide {
+  position: relative;
+  min-width: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.embla__slide--talent {
+  flex: 0 0 25%; /* Four slides on large screens */
+}
+
+/* Swiper Pagination Custom Styles */
+.banner-swiper .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5) !important;
+  opacity: 1 !important;
+  width: 8px !important;
+  height: 8px !important;
+  margin: 0 4px !important;
+}
+
+.banner-swiper .swiper-pagination-bullet-active {
+  background: hsl(var(--primary)) !important;
+  width: 24px !important;
+  border-radius: 4px !important;
+}
+
+/* Banner Image Performance */
+.banner-image {
+  will-change: transform;
+}
+
+/* --- Swiper Hero Banner Smooth Scale Transition --- */
+.banner-swiper .swiper-slide {
+  transition: transform 0.7s cubic-bezier(0.19, 1, 0.22, 1),
+              opacity 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+  transform: scale(0.85);
+  opacity: 0.4;
+}
+
+@media (min-width: 768px) {
+  .banner-swiper .swiper-slide {
+    transform: scale(0.9);
+    opacity: 0.6;
+  }
+}
+
+.banner-swiper .swiper-slide-active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.banner-swiper .swiper-slide-next,
+.banner-swiper .swiper-slide-prev {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
