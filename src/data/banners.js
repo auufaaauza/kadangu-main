@@ -1,28 +1,63 @@
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=2070&auto=format&fit=crop',
-    title: 'Yuk, Solo Travel!',
-    category: 'Wisata Seni',
+    image: '/images/banner/1.jpg',
+    title: 'Festival Tari Tradisional',
+    category: 'Ekspresi Nusantara',
   },
   {
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=2069&auto=format&fit=crop',
-    title: 'Wisata Garut',
-    category: 'Lebih Gampang, Lebih Murah',
+    image: '/images/banner/2.jpg',
+    title: 'Pertunjukan Wayang Kulit',
+    category: 'Warisan Budaya',
   },
   {
-    image: 'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=1992&auto=format&fit=crop',
-    title: 'Let\'s Go!',
-    category: 'With Kadangu',
+    image: '/images/banner/3.jpg',
+    title: 'Senja di Panggung Budaya',
+    category: 'Senja Kreatif',
   },
   {
-    image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1974&auto=format&fit=crop',
-    title: 'Seni Tradisi',
-    category: 'Eksplorasi Budaya',
+    image: '/images/banner/4.jpg',
+    title: 'Kriya Lokal Unggulan',
+    category: 'Karya Anak Bangsa',
   },
   {
-    image: 'https://images.unsplash.com/photo-1503095396549-807759245b35?w=2070&auto=format&fit=crop',
-    title: 'Pentas Teater',
-    category: 'Kisah Penuh Makna',
+    image: '/images/banner/5.jpg',
+    title: 'Pentas Musik Etnik',
+    category: 'Harmoni Suara',
+  },
+  {
+    image: '/images/banner/6.jpg',
+    title: 'Atraksi Budaya Nusantara',
+    category: 'Eksplorasi Seni',
+  },
+  {
+    image: '/images/banner/7.jpg',
+    title: 'Pameran Seni Rupa',
+    category: 'Galeri Terbuka',
+  },
+  {
+    image: '/images/banner/8.jpg',
+    title: 'Workshop Tari Modern',
+    category: 'Belajar & Berkarya',
+  },
+  {
+    image: '/images/banner/9.jpg',
+    title: 'Karnaval Budaya',
+    category: 'Festival Rakyat',
+  },
+  {
+    image: '/images/banner/10.jpg',
+    title: 'Teater Kontemporer',
+    category: 'Cerita Masa Kini',
+  },
+  {
+    image: '/images/banner/11.jpg',
+    title: 'Pagelaran Musik Jalanan',
+    category: 'Ritme Kota',
+  },
+  {
+    image: '/images/banner/12.jpg',
+    title: 'Kolaborasi Seniman Lokal',
+    category: 'Kreatif Bersama',
   },
 ];
 
