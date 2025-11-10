@@ -18,18 +18,18 @@ const BannerSlide = ({ banner, isCenter }) => {
     const container = containerRef.current;
 
     if (isCenter) {
-      container.style.transform = "scale(1.05)";
+      container.style.transform = "scale(1.03)";
       container.style.opacity = "1";
       container.style.transition =
         "transform 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 600ms ease";
 
       img.style.transition = "transform 4s ease-out, filter 1s ease-out";
-      img.style.transform = "scale(1.08)";
+      img.style.transform = "scale(1.05)";
       img.style.filter = "brightness(1.05) contrast(1.1)";
       overlay.style.background = "rgba(0,0,0,0)";
       container.style.boxShadow = "0 20px 40px rgba(0,0,0,0.12)";
     } else {
-      container.style.transform = "scale(0.9)";
+      container.style.transform = "scale(0.96)";
       container.style.opacity = "0.7";
       container.style.transition =
         "transform 800ms ease-out, opacity 600ms ease";
@@ -51,8 +51,8 @@ const BannerSlide = ({ banner, isCenter }) => {
       let pos = 0;
       const animate = () => {
         pos += 0.04;
-        const offset = Math.sin(pos) * 10; // 10px kiri-kanan
-        img.style.transform = `scale(1.08) translateX(${offset}px)`;
+        const offset = Math.sin(pos) * 6; // 6px kiri-kanan
+        img.style.transform = `scale(1.05) translateX(${offset}px)`;
         anim = requestAnimationFrame(animate);
       };
       anim = requestAnimationFrame(animate);
@@ -156,7 +156,7 @@ const Banner = ({ banners = [] }) => {
 
   return (
     <div className="relative w-full bg-transparent">
-      <div className="w-full max-w-[1580px] mx-auto px-4 pt-6 md:pt-8 relative overflow-visible">
+      <div className="w-full max-w-[1580px] mx-auto pt-6 md:pt-8 relative overflow-x-hidden">
         <Swiper
           ref={swiperRef}
           modules={[Autoplay]}
@@ -168,8 +168,9 @@ const Banner = ({ banners = [] }) => {
           loop
           centeredSlides
           slidesPerView={3}
-          spaceBetween={30}
-          className="banner-swiper overflow-visible py-8"
+          spaceBetween={28}
+          centeredSlidesBounds
+          className="banner-swiper overflow-visible px-2 sm:px-4 lg:px-6 py-8"
           breakpoints={{
             320: { slidesPerView: 1, spaceBetween: 16, centeredSlides: true },
             640: { slidesPerView: 2, spaceBetween: 20, centeredSlides: true },
