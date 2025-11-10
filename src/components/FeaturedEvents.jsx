@@ -13,64 +13,42 @@ const FeaturedEvents = () => {
       title: "Monolog: Sepotong Senja untuk Pacarku",
       category: "Teater",
       date: "15 NOVEMBER 2025",
-      image:
-        "https://images.unsplash.com/photo-1515169067865-5387ec356754?q=80&w=1974&auto=format&fit=crop",
+      image: "/images/features/1.jpg",
     },
     {
       id: 2,
       title: "Pagelaran Tari Saman Gayo",
       category: "Tari",
       date: "22 NOVEMBER 2025",
-      image:
-        "https://images.unsplash.com/photo-1597873839242-a7d3a7a9f731?q=80&w=1974&auto=format&fit=crop",
+      image: "/images/features/2.jpg",
     },
     {
       id: 3,
       title: "Konser Melodi Nusantara",
       category: "Musik",
       date: "28 NOVEMBER 2025",
-      image:
-        "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=1974&auto=format&fit=crop",
+      image: "/images/features/3.jpg",
     },
     {
       id: 4,
       title: 'Pameran Lukisan "Wajah Indonesia"',
       category: "Seni Rupa",
       date: "05 DESEMBER 2025",
-      image:
-        "https://images.unsplash.com/photo-1547891654-e66ed711b931?q=80&w=2070&auto=format&fit=crop",
+      image: "/images/features/4.jpg",
     },
     {
       id: 5,
       title: "Malam Puisi & Sastra",
       category: "Sastra",
       date: "12 DESEMBER 2025",
-      image:
-        "https://images.unsplash.com/photo-1455541502498-63b845575013?q=80&w=2070&auto=format&fit=crop",
+      image: "/images/features/5.jpg",
     },
     {
       id: 6,
       title: "Pemutaran Film Indie Garut",
       category: "Film",
       date: "19 DESEMBER 2025",
-      image:
-        "https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=2059&auto=format&fit=crop",
-    },
-    {
-      id: 7,
-      title: "Festival Jazz Nusantara",
-      category: "Musik",
-      date: "26 DESEMBER 2025",
-      image:
-        "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=2070&auto=format&fit=crop",
-    },
-    {
-      id: 8,
-      title: "Pertunjukan Wayang Kulit",
-      category: "Budaya",
-      date: "02 JANUARI 2026",
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?q=80&w=2070&auto=format&fit=crop",
+      image: "/images/features/6.jpg",
     },
   ];
 
