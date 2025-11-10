@@ -89,8 +89,8 @@ const FeaturedEvents = () => {
             >
               {events.map((event) => (
                 <div key={event.id} className="w-full flex-shrink-0 px-2">
-                  <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div className="relative w-full aspect-[16/9]">
+                  <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+                    <div className="relative w-full aspect-[2/3]">
                       <img
                         src={event.image}
                         alt={event.title}
@@ -98,15 +98,15 @@ const FeaturedEvents = () => {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
                       <div className="absolute top-3 left-3">
-                        <span className="bg-primary text-white text-xs px-3 py-1 rounded-full font-semibold">
+                        <span className="bg-primary text-white text-xs px-3 py-1.5 rounded-full font-semibold">
                           {event.category}
                         </span>
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                        <h3 className="font-bold text-lg mb-2 line-clamp-2">
+                        <h3 className="font-bold text-base mb-1.5 line-clamp-2">
                           {event.title}
                         </h3>
-                        <p className="text-sm text-white/90">{event.date}</p>
+                        <p className="text-xs text-white/90">{event.date}</p>
                       </div>
                     </div>
                     <div className="p-4">
@@ -114,7 +114,7 @@ const FeaturedEvents = () => {
                         onClick={() => navigate(`/shows/${event.id}`)}
                         className="w-full bg-primary text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
                       >
-                        <Ticket className="w-5 h-5" />
+                        <Ticket className="w-4 h-4" />
                         BELI TIKET
                       </button>
                     </div>
