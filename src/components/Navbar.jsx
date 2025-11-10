@@ -48,9 +48,12 @@ const Navbar = () => {
         <div className="bg-transparent backdrop-blur-xl rounded-2xl border border-slate-700/30 shadow-2xl shadow-black/20">
           <div className="flex items-center justify-between h-14 sm:h-16 px-3 sm:px-4">
           <div className="flex items-center space-x-2 sm:space-x-3 cursor-pointer" onClick={() => window.location.href='/'}>
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-[hsl(var(--primary))] rounded-lg flex items-center justify-center shadow-md shadow-[hsl(var(--primary))]/30 ring-2 ring-[hsl(var(--border))]">
-              <span className="text-white font-bold text-lg sm:text-xl">K</span>
-            </div>
+            <img
+              src="/images/logo.png"
+              alt="Kadangu logo"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg shadow-md shadow-[hsl(var(--primary))]/30 ring-2 ring-[hsl(var(--border))] object-cover"
+            />
+
             <div>
               {/* Mobile: Kadangu */}
               <h1 className="text-sm font-bold text-slate-800 dark:text-slate-200 sm:hidden">
