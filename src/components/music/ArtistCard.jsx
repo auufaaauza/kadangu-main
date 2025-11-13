@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Heart, Users, MapPin, Music, Play } from "lucide-react";
 import { cn } from '@/lib/utils';
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { CategoryBadge } from "./CategoryBadge";
 import { VideoModal } from "./VideoModal";
 
