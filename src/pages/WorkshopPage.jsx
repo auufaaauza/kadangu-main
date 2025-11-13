@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { HeartHandshake as Handshake } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { WORKSHOP_FACILITATORS } from "@/data/workshopData";
 import { ArtistCard } from "@/components/music/ArtistCard";
 

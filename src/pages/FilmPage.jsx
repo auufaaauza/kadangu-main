@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Film } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { FILM_ARTISTS } from "@/data/filmData";
 import { ArtistCard } from "@/components/music/ArtistCard";
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BookOpen } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { LITERATURE_ARTISTS } from "@/data/literatureData";
 import { ArtistCard } from "@/components/music/ArtistCard";
 
