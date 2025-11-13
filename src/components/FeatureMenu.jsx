@@ -42,19 +42,18 @@ const FeatureMenu = () => {
 
   const mainFeatures = [
     { name: "Pertunjukan", icon: Ticket, color: "text-blue-500", path: "/shows" },
-    { name: "Seniman", icon: Users, color: "text-purple-500" },
     { name: "Berita", icon: Newspaper, color: "text-orange-500", path: "/news" },
-    { name: "Musik", icon: Music, color: "text-red-500" },
+    { name: "Musik", icon: Music, color: "text-red-500", path: "/music" },
     { name: "Tari", icon: Drama, color: "text-pink-500", path: "/dance" },
-    { name: "Teater", icon: Users, color: "text-indigo-500" },
-    { name: "Seni Rupa", icon: Palette, color: "text-yellow-500" },
+    { name: "Teater", icon: Users, color: "text-indigo-500", path: "/theater" },
+    { name: "Seni Rupa", icon: Palette, color: "text-yellow-500", path: "/art" },
   ];
 
   const otherFeatures = [
-    { name: "Sastra", icon: BookOpen, color: "text-green-500" },
-    { name: "Film", icon: Film, color: "text-cyan-500" },
-    { name: "Budaya", icon: Landmark, color: "text-amber-500" },
-    { name: "Workshop", icon: Handshake, color: "text-teal-500" },
+    { name: "Sastra", icon: BookOpen, color: "text-green-500", path: "/literature" },
+    { name: "Film", icon: Film, color: "text-cyan-500", path: "/film" },
+    { name: "Budaya", icon: Landmark, color: "text-amber-500", path: "/culture" },
+    { name: "Workshop", icon: Handshake, color: "text-teal-500", path: "/workshop" },
   ];
 
   const allFeatures = [...mainFeatures, ...otherFeatures];
@@ -65,8 +64,8 @@ const FeatureMenu = () => {
       setIsPopupOpen(false);
     } else {
       toast({
-        title: `🚧 Fitur ${feature.name} belum tersedia`,
-        description: "Anda bisa request fitur ini di prompt berikutnya! 🚀",
+        title: ` Fitur ${feature.name} belum tersedia`,
+        description: "Tunggu Update dari tim Kadangu nanti yaa! ",
       });
     }
   };
@@ -141,7 +140,7 @@ const FeatureMenu = () => {
 
               {/* Judul */}
               <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 mb-6 sm:mb-8">
-                Semua Fitur Kadangu
+                Semua Menu Kadangu
               </h2>
 
               {/* Semua Fitur */}

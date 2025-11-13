@@ -8,12 +8,31 @@ const Navbar = () => {
   const { toast } = useToast();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    // Detect mobile device
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    // Disable scroll animation on mobile to prevent bugs
+    if (isMobile) {
+      setIsVisible(true);
+      return;
+    }
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      // Hide navbar when scrolling down, show when scrolling up
+      // Only apply scroll behavior on desktop
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false);
       } else if (currentScrollY < lastScrollY) {
@@ -25,7 +44,7 @@ const Navbar = () => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+  }, [lastScrollY, isMobile]);
   
   const handleAction = (feature) => {
     toast({

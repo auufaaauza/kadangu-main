@@ -26,10 +26,11 @@ const BottomNav = () => {
   ];
 
   return (
-    <div className="fixed bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 z-40">
-      <div className="max-w-md mx-auto">
-        <div className="bg-transparent backdrop-blur-xl rounded-3xl border border-slate-700/30 shadow-2xl shadow-black/20">
-          <div className="flex items-end justify-around h-16 sm:h-[70px] px-2 sm:px-3">
+    <div className="fixed bottom-0 left-0 right-0 z-50" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+      <div className="p-2 sm:p-3">
+        <div className="max-w-md mx-auto">
+          <div className="bg-white/90 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl shadow-black/10 dark:bg-slate-900/90 dark:border-slate-700/30 dark:shadow-black/20">
+            <div className="flex items-end justify-around h-16 sm:h-[70px] px-2 sm:px-3">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const isHome = item.name === 'Home';
@@ -67,6 +68,7 @@ const BottomNav = () => {
               </motion.button>
             );
           })}
+            </div>
           </div>
         </div>
       </div>

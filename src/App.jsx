@@ -7,11 +7,21 @@ import HomePage from '@/pages/HomePage';
 import ExplorePage from '@/pages/ExplorePage';
 import ProfilePage from '@/pages/ProfilePage';
 import WishlistPage from '@/pages/WishlistPage';
-import ShowsPage from '@/pages/ShowsPage';
 import ShowDetailPage from '@/pages/ShowDetailPage';
 import PaymentSuccessPage from '@/pages/PaymentSuccessPage';
-import DancePage from '@/pages/DancePage';
-import NewsPage from '@/pages/NewsPage';
+import { ShowsPageNew } from '@/pages/ShowsPageNew';
+import { DancePageNew } from '@/pages/DancePageNew';
+import { NewsPageNew } from '@/pages/NewsPageNew';
+import { IndexPage } from "@/pages/music/IndexPage";
+import { BookingPage } from "@/pages/music/BookingPage";
+import { JoinTalentPage } from "@/pages/music/JoinTalentPage";
+import { NotFoundPage } from "@/pages/music/NotFoundPage";
+import { TheaterPage } from "@/pages/TheaterPage";
+import { ArtPageNew } from "@/pages/ArtPageNew";
+import { LiteraturePage } from "@/pages/LiteraturePage";
+import { FilmPage } from "@/pages/FilmPage";
+import { CulturePage } from "@/pages/CulturePage";
+import { WorkshopPage } from "@/pages/WorkshopPage";
 
 function App() {
   return (
@@ -22,11 +32,20 @@ function App() {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
-          <Route path="/shows" element={<ShowsPage />} />
+          <Route path="/shows" element={<ShowsPageNew />} />
           <Route path="/shows/:id" element={<ShowDetailPage />} />
           <Route path="/payment-success" element={<PaymentSuccessPage />} />
-          <Route path="/dance" element={<DancePage />} />
-          <Route path="/news" element={<NewsPage />} />
+          <Route path="/dance" element={<DancePageNew />} />
+          <Route path="/news" element={<NewsPageNew />} />
+          <Route path="/music" element={<IndexPage />} />
+          <Route path="/music/booking/:id" element={<BookingPage />} />
+          <Route path="/music/join-talent" element={<JoinTalentPage />} />
+          <Route path="/theater" element={<TheaterPage />} />
+          <Route path="/art" element={<ArtPageNew />} />
+          <Route path="/literature" element={<LiteraturePage />} />
+          <Route path="/film" element={<FilmPage />} />
+          <Route path="/culture" element={<CulturePage />} />
+          <Route path="/workshop" element={<WorkshopPage />} />
           {/* A dummy route for tickets to show the toast */}
           <Route path="/tickets" element={<ExplorePage />} />
         </Route>
