@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
 import { Music } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { ARTISTS } from "@/data/musicData";
 import { categoryLabels } from "@/components/music/CategoryBadge";
 import { ArtistCard } from "@/components/music/ArtistCard";

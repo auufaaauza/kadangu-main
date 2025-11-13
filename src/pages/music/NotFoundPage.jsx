@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export function NotFoundPage() {
   const location = window.location;
