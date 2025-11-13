@@ -1,6 +1,6 @@
 import React from "react";
 import { ArrowRight, Sparkles, Trophy, Clock, Shield } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export function ExploreSection({ featureType = "artis" }) {
   const getFeatureContent = () => {

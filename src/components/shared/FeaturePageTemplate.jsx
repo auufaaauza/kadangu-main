@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { ArtistCard } from "@/components/music/ArtistCard";
 import { HowItWorksModal } from "./HowItWorksModal";
 import { ExploreSection } from "./ExploreSection";

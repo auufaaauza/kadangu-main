@@ -1,6 +1,6 @@
 import React from "react";
 import { X, CheckCircle, Users, Calendar, Star } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export function HowItWorksModal({ isOpen, onClose, featureType = "artis" }) {
   if (!isOpen) return null;
