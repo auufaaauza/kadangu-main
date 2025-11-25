@@ -7,21 +7,22 @@ import HomePage from '@/pages/HomePage';
 import ExplorePage from '@/pages/ExplorePage';
 import ProfilePage from '@/pages/ProfilePage';
 import WishlistPage from '@/pages/WishlistPage';
-import ShowDetailPage from '@/pages/ShowDetailPage';
+import ShowDetailPage from '@/pages/show/detail/ShowDetailPage';
 import PaymentSuccessPage from '@/pages/PaymentSuccessPage';
-import { ShowsPageNew } from '@/pages/ShowsPageNew';
-import { DancePageNew } from '@/pages/DancePageNew';
-import { NewsPageNew } from '@/pages/NewsPageNew';
-import { IndexPage } from "@/pages/music/IndexPage";
-import { BookingPage } from "@/pages/music/BookingPage";
-import { JoinTalentPage } from "@/pages/music/JoinTalentPage";
-import { NotFoundPage } from "@/pages/music/NotFoundPage";
-import { TheaterPage } from "@/pages/TheaterPage";
-import { ArtPageNew } from "@/pages/ArtPageNew";
-import { LiteraturePage } from "@/pages/LiteraturePage";
-import { FilmPage } from "@/pages/FilmPage";
-import { CulturePage } from "@/pages/CulturePage";
-import { WorkshopPage } from "@/pages/WorkshopPage";
+import { ShowPage } from '@/pages/Show/ShowPage';
+import DancePage from '@/pages/Dance/DancePage';
+import DanceDetailPage from '@/pages/Dance/detail/DanceDetailPage';
+import NewsPage  from '@/pages/News/NewsPage';
+import NewsDetailPage from "@/pages/News/detail/NewsDetailPage";
+import { MusicPage } from "@/pages/Music/MusicPage";
+import { BookingPage } from "@/pages/Music/BookingPage";
+import TheaterPage  from "@/pages/Theater/TheaterPage";
+import TheaterDetailPage from "@/pages/Theater/detail/TheaterDetailPage";
+import { ArtPage } from "@/pages/Art/ArtPage";
+import { LiteraturePage } from "@/pages/Literature/LiteraturePage";
+import { FilmPage } from "@/pages/Film/FilmPage";
+import { CulturePage } from "@/pages/Culture/CulturePage";
+import { WorkshopPage } from "@/pages/workshop/WorkshopPage";
 
 function App() {
   return (
@@ -32,16 +33,18 @@ function App() {
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
-          <Route path="/shows" element={<ShowsPageNew />} />
-          <Route path="/shows/:id" element={<ShowDetailPage />} />
+          <Route path="/shows" element={<ShowPage />} />
+          <Route path="/shows/detail/:id" element={<ShowDetailPage />} />
           <Route path="/payment-success" element={<PaymentSuccessPage />} />
-          <Route path="/dance" element={<DancePageNew />} />
-          <Route path="/news" element={<NewsPageNew />} />
-          <Route path="/music" element={<IndexPage />} />
+          <Route path="/dance" element={<DancePage />} />
+          <Route path="/dance/detail/:id" element={<DanceDetailPage />} />
+          <Route path="/news" element={<NewsPage />} />
+          <Route path="/news/detail/:id" element={<NewsDetailPage />} />
+          <Route path="/music" element={<MusicPage />} />
           <Route path="/music/booking/:id" element={<BookingPage />} />
-          <Route path="/music/join-talent" element={<JoinTalentPage />} />
           <Route path="/theater" element={<TheaterPage />} />
-          <Route path="/art" element={<ArtPageNew />} />
+          <Route path="/theater/detail/:id" element={<TheaterDetailPage/>}/>
+          <Route path="/art" element={<ArtPage />} />
           <Route path="/literature" element={<LiteraturePage />} />
           <Route path="/film" element={<FilmPage />} />
           <Route path="/culture" element={<CulturePage />} />

@@ -2,7 +2,7 @@ export const LITERATURE_ARTISTS = [
   {
     id: "1",
     name: "Komunitas Penyair Muda",
-    category: "poetry",
+    category: "Poetry",
     genre: "Puisi Kontemporer",
     image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=500&h=500&fit=crop",
     members: 10,
@@ -14,7 +14,7 @@ export const LITERATURE_ARTISTS = [
   {
     id: "2",
     name: "Teater Baca Sastra",
-    category: "storytelling",
+    category: "Storytelling",
     genre: "Storytelling",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop",
     members: 8,
@@ -26,7 +26,7 @@ export const LITERATURE_ARTISTS = [
   {
     id: "3",
     name: "Sastrawan Nusantara",
-    category: "traditional",
+    category: "Traditional",
     genre: "Sastra Tradisional",
     image: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=500&h=500&fit=crop",
     members: 12,

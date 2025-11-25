@@ -47,10 +47,10 @@ const FeatureMenu = () => {
     { name: "Tari", icon: Drama, color: "text-pink-500", path: "/dance" },
     { name: "Teater", icon: Users, color: "text-indigo-500", path: "/theater" },
     { name: "Seni Rupa", icon: Palette, color: "text-yellow-500", path: "/art" },
+    { name: "Sastra", icon: BookOpen, color: "text-green-500", path: "/literature" },
   ];
 
   const otherFeatures = [
-    { name: "Sastra", icon: BookOpen, color: "text-green-500", path: "/literature" },
     { name: "Film", icon: Film, color: "text-cyan-500", path: "/film" },
     { name: "Budaya", icon: Landmark, color: "text-amber-500", path: "/culture" },
     { name: "Workshop", icon: Handshake, color: "text-teal-500", path: "/workshop" },

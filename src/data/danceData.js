@@ -1,50 +1,52 @@
-export const DANCE_ARTISTS = [
+export const DANCE_DATA = [
   {
     id: "1",
-    name: "Modern Dance Collective",
-    category: "modern",
-    genre: "Tari Modern",
-    image: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?w=500&h=500&fit=crop",
-    members: 15,
-    description: "Kolektif penari modern dengan koreografi kontemporer",
-    price: "Rp 20.000.000 - Rp 45.000.000",
-    location: "Jakarta, Indonesia",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    type: "event", // NEW
+    name: "Tari Jaipong",
+    image: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800",
+    category: "Tradisional",
+    author: "Sanggar Budaya Sunda",
+    date: "12 Januari 2025",
+    duration: "30 menit",
+    members: 6,
+    location: "Garut Kota",
+    description: `
+      Tari Jaipong adalah salah satu tarian khas Jawa Barat yang penuh energi dan ekspresif.
+      Gerakannya lincah, ritmis, dan kental dengan budaya Sunda. Ditampilkan oleh penari profesional dari sanggar lokal.
+    `,
   },
+
   {
     id: "2",
-    name: "Traditional Dance Ensemble",
-    category: "traditional",
-    genre: "Tari Tradisional",
-    image: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=500&h=500&fit=crop",
-    members: 20,
-    description: "Ensemble tari tradisional dari berbagai daerah Indonesia",
-    price: "Rp 18.000.000 - Rp 40.000.000",
-    location: "Yogyakarta, Indonesia",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    type: "event", // NEW
+    name: "Contemporary Movement",
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800",
+    category: "Modern",
+    author: "G-Flex Studio",
+    date: "18 Januari 2025",
+    duration: "25 menit",
+    members: 4,
+    location: "Gedung Kesenian Garut",
+    description: `
+      Tarian kontemporer modern dengan elemen freestyle dan improvisasi. Menggabungkan
+      estetika tubuh dengan emosi untuk menciptakan pengalaman visual yang artistik.
+    `,
   },
+
   {
     id: "3",
-    name: "Hip Hop Dance Crew",
-    category: "hiphop",
-    genre: "Tari Hip Hop",
-    image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=500&h=500&fit=crop",
-    members: 12,
-    description: "Crew hip hop dengan gerakan energik dan dinamis",
-    price: "Rp 15.000.000 - Rp 35.000.000",
-    location: "Bandung, Indonesia",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-  },
-  {
-    id: "4",
-    name: "Ballet Performance Group",
-    category: "ballet",
-    genre: "Tari Balet",
-    image: "https://images.unsplash.com/photo-1518611012118-696072aa579a?w=500&h=500&fit=crop",
-    members: 18,
-    description: "Grup balet dengan teknik klasik dan performa elegan",
-    price: "Rp 25.000.000 - Rp 55.000.000",
-    location: "Surabaya, Indonesia",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    type: "community", // NEW
+    name: "Street Dance Showcase",
+    image: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=800",
+    category: "Street",
+    author: "Urban Moves Crew",
+    date: "22 Januari 2025",
+    duration: "20 menit",
+    members: 8,
+    location: "Alun-Alun Garut",
+    description: `
+      Aksi panggung dari komunitas street dance Garut dengan gaya hip-hop, popping, dan krump.
+      Energi tinggi dan vibes festival yang meriah memenuhi area pertunjukan.
+    `,
   },
 ];

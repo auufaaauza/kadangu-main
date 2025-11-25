@@ -6,8 +6,8 @@ import AutoCarousel from "@/components/sections/AutoCarousel";
 import { heroBanners } from "@/data/banners";
 import FeatureMenu from "@/components/FeatureMenu";
 import MascotBanner from "@/components/sections/MascotBanner";
-import FeaturedEvents from "@/components/FeaturedEvents";
-import FeaturedArtists from "@/components/FeaturedArtists";
+import FeaturedEvents from "@/components/show/FeaturedEvents";
+import FeaturedArtists from "@/components/talent/FeaturedArtists";
 import NewsSection from "@/components/NewsSection";
 import Footer from "@/components/Footer";
 import { useToast } from "@/components/ui/use-toast";
@@ -54,7 +54,7 @@ const HomePage = () => {
 
             <div className='overflow-x-hidden '>
                 {/* Banner Section */}
-                <section className='container mx-auto px-4 mt-4 sm:mt-6 mb-3 sm:mb-4'>
+                <section className='container mx-auto px-4 mt-2 sm:mt-6 mb-3 sm:mb-4'>
                     <AutoCarousel banners={heroBanners} />
                 </section>
 

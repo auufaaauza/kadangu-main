@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Music, Theater, Palette, Camera, Sparkles } from 'lucide-react';
+import { Search, MapPin, Music, Theater, Palette, Camera, Sparkles, User2Icon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
@@ -13,7 +13,7 @@ const ExplorePage = () => {
     { name: 'Musik', icon: Music, color: 'from-purple-500 to-pink-500', count: '50+ Acara' },
     { name: 'Tari', icon: Theater, color: 'from-blue-500 to-cyan-500', count: '30+ Acara' },
     { name: 'Seni Rupa', icon: Palette, color: 'from-orange-500 to-red-500', count: '20+ Pameran' },
-    { name: 'Fotografi', icon: Camera, color: 'from-green-500 to-teal-500', count: '15+ Workshop' },
+    { name: 'Literature', icon: User2Icon, color: 'from-green-500 to-teal-500', count: '15+ Workshop' },
     { name: 'Teater', icon: Sparkles, color: 'from-yellow-500 to-orange-500', count: '25+ Pertunjukan' },
   ];
 
