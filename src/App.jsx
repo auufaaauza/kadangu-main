@@ -47,11 +47,16 @@ import { CulturePage } from "@/pages/Culture/CulturePage";
 // --- Workshop ---
 import { WorkshopPage } from "@/pages/Workshop/WorkshopPage";
 
+// --- Talent ---
+import TalentPage from "@/pages/Talent/TalentPage";
+import TalentDetailPage from "@/pages/Talent/detail/TalentDetailPage";
+
 
 export default function App() {
   return (
     <Router>
       <Routes>
+
         {/* Layout wrapper */}
         <Route element={<AppLayout />}>
 
@@ -96,6 +101,10 @@ export default function App() {
 
           {/* --- Workshop --- */}
           <Route path="/workshop" element={<WorkshopPage />} />
+
+          {/* --- Talent --- */}
+          <Route path="/talent" element={<TalentPage />} />
+          <Route path="/talent/detail/:id" element={<TalentDetailPage />} />
 
           {/* Dummy route */}
           <Route path="/tickets" element={<ExplorePage />} />

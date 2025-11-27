@@ -14,6 +14,7 @@ import {
   Landmark,
   HeartHandshake as Handshake,
   X,
+  UserCheck
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -54,6 +55,7 @@ const FeatureMenu = () => {
     { name: "Film", icon: Film, color: "text-cyan-500", path: "/film" },
     { name: "Budaya", icon: Landmark, color: "text-amber-500", path: "/culture" },
     { name: "Workshop", icon: Handshake, color: "text-teal-500", path: "/workshop" },
+    { name: "Talent", icon: UserCheck, color: "text-grey-500", path: "/talent"},
   ];
 
   const allFeatures = [...mainFeatures, ...otherFeatures];
