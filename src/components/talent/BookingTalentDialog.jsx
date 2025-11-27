@@ -2,7 +2,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-export function BookingTalentDialog({ open, onOpenChange, talent }) {
+export function BookingTalentDialog({
+  open,
+  onOpenChange,
+  talentName,
+  talentCategory,
+  talentNiche
+}) {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -17,19 +23,18 @@ export function BookingTalentDialog({ open, onOpenChange, talent }) {
     const text = `
 Halo, saya ingin booking talent:
 
-Nama Talent: ${talent.name}
-Platform: ${talent.category}
-Niche: ${talent.niche}
+Nama Talent: ${talentName}
+Platform: ${talentCategory}
+Niche: ${talentNiche}
 
 --- Data Saya ---
 Nama: ${formData.name}
 No WA: ${formData.phone}
 Brand/Usaha: ${formData.brand}
 Detail Kebutuhan: ${formData.message}
-    `;
+    `.trim();
 
-    const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(text)}`;
-
+    const waUrl = `https://wa.me/6282214459606?text=${encodeURIComponent(text)}`;
     window.open(waUrl, "_blank");
   };
 
@@ -39,7 +44,7 @@ Detail Kebutuhan: ${formData.message}
         <DialogHeader>
           <DialogTitle>Booking Talent</DialogTitle>
           <p className="text-sm text-muted-foreground">
-            Isi data berikut untuk menghubungi talent.
+            Isi data berikut untuk menghubungi admin.
           </p>
         </DialogHeader>
 
@@ -49,7 +54,6 @@ Detail Kebutuhan: ${formData.message}
             <input
               name="name"
               className="w-full px-3 py-2 rounded-lg border"
-              placeholder="Nama lengkap"
               onChange={handleChange}
             />
           </div>
@@ -59,7 +63,6 @@ Detail Kebutuhan: ${formData.message}
             <input
               name="phone"
               className="w-full px-3 py-2 rounded-lg border"
-              placeholder="+62..."
               onChange={handleChange}
             />
           </div>
@@ -69,7 +72,6 @@ Detail Kebutuhan: ${formData.message}
             <input
               name="brand"
               className="w-full px-3 py-2 rounded-lg border"
-              placeholder="Nama brand / usaha"
               onChange={handleChange}
             />
           </div>
@@ -80,7 +82,6 @@ Detail Kebutuhan: ${formData.message}
               name="message"
               rows={3}
               className="w-full px-3 py-2 rounded-lg border resize-none"
-              placeholder="Contoh: review produk, campaign UMKM, event performance..."
               onChange={handleChange}
             ></textarea>
           </div>

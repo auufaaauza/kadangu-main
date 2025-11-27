@@ -130,10 +130,12 @@ export default function TalentDetailPage() {
 
       {/* BOOKING FORM */}
       <BookingTalentDialog
-        open={openForm}
-        onOpenChange={setOpenForm}
-        talentName={talent.name}
-      />
+  open={openForm}
+  onOpenChange={setOpenForm}
+  talentName={talent.name}
+  talentCategory={talent.category}
+  talentNiche={talent.niche}
+/>
     </div>
   );
 }
