@@ -1,65 +1,102 @@
-import Image from "next/image";
+'use client'
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Music } from "lucide-react";
+import AutoCarousel from "@/components/sections/AutoCarousel";
+import { heroBanners } from "@/data/banner";
+import FeatureMenu from "@/components/FeatureMenu";
+import MascotBanner from "@/components/sections/MascotBanner";
+import FeaturedEvents from "@/components/show/FeaturedEvents";
+import FeaturedArtists from "@/components/talent/FeaturedArtists";
+import NewsSection from "@/components/NewsSection";
+import Footer from "@/components/Footer";
+import { useToast } from "@/components/ui/use-toast";
 
-export default function Home() {
+const HomePage = () => {
+  const { toast } = useToast();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Hide FAB when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else if (currentScrollY < lastScrollY) {
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  const handleFabClick = () => {
+    toast({
+      title: "🎵 Fitur musik belum tersedia",
+      description: "Anda bisa request fitur ini di prompt berikutnya! 🚀",
+    });
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+
+      <div className='overflow-x-hidden '>
+        {/* Banner Section */}
+        <section className='container mx-auto px-4 mt-2 sm:mt-6 mb-3 sm:mb-4'>
+          <AutoCarousel banners={heroBanners} />
+        </section>
+
+        {/* Feature Menu Section */}
+        <section className='container mx-auto px-4 mb-4 sm:mb-5'>
+          <FeatureMenu />
+        </section>
+
+        {/* Mascot Banner Section */}
+        <section className='container mx-auto px-4 mb-4 sm:mb-5'>
+          <MascotBanner />
+        </section>
+
+        {/* Events Section */}
+        <section className='container mx-auto px-4 mb-4 sm:mb-5'>
+          <FeaturedEvents />
+        </section>
+
+        {/* Artists Section */}
+        <section className='container mx-auto px-4 mb-4 sm:mb-5'>
+          <FeaturedArtists />
+        </section>
+
+        {/* News Section */}
+        <section className='container mx-auto px-4 mb-4 sm:mb-5'>
+          <NewsSection />
+        </section>
+
+        <Footer />
+      </div>
+
+      {/* ================= Floating Music Button ================= */}
+      <motion.button
+        onClick={handleFabClick}
+        whileHover={{ scale: 1.1, rotate: 10 }}
+        whileTap={{ scale: 0.9 }}
+        initial={{ opacity: 1, x: 0 }}
+        animate={{
+          opacity: isVisible ? 1 : 0,
+          x: isVisible ? 0 : 100,
+          scale: isVisible ? 1 : 0.8,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className='fixed bottom-28 sm:bottom-32 right-4 z-30 w-12 h-12 sm:w-14 sm:h-14 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--accent))] rounded-full shadow-lg shadow-[hsl(var(--primary))]/30 flex items-center justify-center text-white border-2 border-white/20 transition-colors duration-300'
+      >
+        <Music className='w-5 h-5 sm:w-6 sm:h-6' />
+      </motion.button>
+    </>
   );
-}
+};
+
+export default HomePage;
