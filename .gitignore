@@ -62,3 +62,4 @@ storybook-static/
 # Firebase
 .firebase/
 .vercel
+.env.example

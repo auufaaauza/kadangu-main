@@ -14,7 +14,7 @@ import {
   Landmark,
   HeartHandshake as Handshake,
   X,
-  UserCheck
+  UserCheck,
 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -36,26 +36,54 @@ const MainFeatureItem = ({ feature, onClick }) => (
   </motion.div>
 );
 
-const FeatureMenu = () => {
+const FeatureMenu = ({ isPopupOpen, setIsPopupOpen }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const mainFeatures = [
-    { name: "Pertunjukan", icon: Ticket, color: "text-blue-500", path: "/shows" },
-    { name: "Berita", icon: Newspaper, color: "text-orange-500", path: "/news" },
+    {
+      name: "Pertunjukan",
+      icon: Ticket,
+      color: "text-blue-500",
+      path: "/shows",
+    },
+    {
+      name: "Berita",
+      icon: Newspaper,
+      color: "text-orange-500",
+      path: "/news",
+    },
     { name: "Musik", icon: Music, color: "text-red-500", path: "/music" },
     { name: "Tari", icon: Drama, color: "text-pink-500", path: "/dance" },
     { name: "Teater", icon: Users, color: "text-indigo-500", path: "/theater" },
-    { name: "Seni Rupa", icon: Palette, color: "text-yellow-500", path: "/art" },
-    { name: "Sastra", icon: BookOpen, color: "text-green-500", path: "/literature" },
+    {
+      name: "Seni Rupa",
+      icon: Palette,
+      color: "text-yellow-500",
+      path: "/art",
+    },
+    {
+      name: "Sastra",
+      icon: BookOpen,
+      color: "text-green-500",
+      path: "/literature",
+    },
   ];
 
   const otherFeatures = [
     { name: "Film", icon: Film, color: "text-cyan-500", path: "/film" },
-    { name: "Budaya", icon: Landmark, color: "text-amber-500", path: "/culture" },
-    { name: "Workshop", icon: Handshake, color: "text-teal-500", path: "/workshop" },
-    { name: "Talent", icon: UserCheck, color: "text-grey-500", path: "/talent"},
+    {
+      name: "Budaya",
+      icon: Landmark,
+      color: "text-amber-500",
+      path: "/culture",
+    },
+    {
+      name: "Workshop",
+      icon: Handshake,
+      color: "text-teal-500",
+      path: "/workshop",
+    },
   ];
 
   const allFeatures = [...mainFeatures, ...otherFeatures];
@@ -142,7 +170,7 @@ const FeatureMenu = () => {
 
               {/* Judul */}
               <h2 className="text-base sm:text-lg md:text-xl font-semibold text-gray-800 mb-6 sm:mb-8">
-                Semua Menu Kadangu
+                Fitur Lainnya
               </h2>
 
               {/* Semua Fitur */}

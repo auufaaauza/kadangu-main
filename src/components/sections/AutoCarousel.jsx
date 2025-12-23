@@ -78,8 +78,7 @@ const BannerSlide = ({ banner, isCenter }) => {
         style={{
           WebkitMaskImage:
             "radial-gradient(white 99%, rgba(255,255,255,0.5) 100%)",
-          maskImage:
-            "radial-gradient(white 99%, rgba(255,255,255,0.5) 100%)",
+          maskImage: "radial-gradient(white 99%, rgba(255,255,255,0.5) 100%)",
           transition: "box-shadow 0.8s ease",
         }}
       >
@@ -165,7 +164,8 @@ const Banner = ({ banners = [] }) => {
             disableOnInteraction: false,
           }}
           speed={1200}
-          loop
+          loop={true}
+          loopAdditionalSlides={2}
           centeredSlides
           slidesPerView={3}
           spaceBetween={28}

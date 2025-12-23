@@ -1,0 +1,379 @@
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Users,
+  CreditCard,
+  ArrowLeft,
+  Check,
+  AlertCircle,
+} from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+
+const TicketBookingPage = () => {
+  const navigate = useNavigate();
+  const { showId } = useParams();
+  const [show, setShow] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    notes: "",
+  });
+  const [errors, setErrors] = useState({});
+
+  // Mock data - replace with API call
+  useEffect(() => {
+    setTimeout(() => {
+      setShow({
+        id: 1,
+        title: "Wayang Kulit Ramayana",
+        date: "2024-02-15",
+        time: "19:00",
+        location: "Gedung Kesenian Jakarta",
+        image:
+          "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
+        categories: [
+          { id: 1, name: "VIP", price: 300000, quota: 50, sold: 30 },
+          { id: 2, name: "Premium", price: 200000, quota: 100, sold: 60 },
+          { id: 3, name: "Regular", price: 150000, quota: 200, sold: 120 },
+        ],
+      });
+      setLoading(false);
+    }, 1000);
+  }, [showId]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) newErrors.name = "Nama wajib diisi";
+    if (!formData.email.trim()) newErrors.email = "Email wajib diisi";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Email tidak valid";
+    if (!formData.phone.trim()) newErrors.phone = "Nomor telepon wajib diisi";
+    if (!selectedCategory) newErrors.category = "Pilih kategori tiket";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateForm()) {
+      // Process booking
+      console.log("Booking data:", {
+        ...formData,
+        category: selectedCategory,
+        quantity,
+      });
+      // Navigate to payment
+      navigate("/payment");
+    }
+  };
+
+  const totalPrice = selectedCategory ? selectedCategory.price * quantity : 0;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="inline-block w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background py-8 px-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Kembali
+        </button>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Left: Form */}
+          <div className="lg:col-span-2">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-xl p-6 shadow-md"
+            >
+              <h2 className="text-2xl font-bold mb-6">Pemesanan Tiket</h2>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Personal Info */}
+                <div>
+                  <h3 className="font-semibold mb-4">Informasi Pemesan</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Nama Lengkap <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-3 rounded-lg border ${
+                          errors.name ? "border-red-500" : "border-border"
+                        } focus:outline-none focus:ring-2 focus:ring-primary/20`}
+                        placeholder="Masukkan nama lengkap"
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.name}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Email <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-3 rounded-lg border ${
+                          errors.email ? "border-red-500" : "border-border"
+                        } focus:outline-none focus:ring-2 focus:ring-primary/20`}
+                        placeholder="email@example.com"
+                      />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.email}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">
+                        Nomor Telepon <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className={`w-full px-4 py-3 rounded-lg border ${
+                          errors.phone ? "border-red-500" : "border-border"
+                        } focus:outline-none focus:ring-2 focus:ring-primary/20`}
+                        placeholder="08xxxxxxxxxx"
+                      />
+                      {errors.phone && (
+                        <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-4 h-4" />
+                          {errors.phone}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Ticket Category */}
+                <div>
+                  <h3 className="font-semibold mb-4">
+                    Pilih Kategori Tiket <span className="text-red-500">*</span>
+                  </h3>
+                  <div className="space-y-3">
+                    {show.categories.map((category) => {
+                      const available = category.quota - category.sold;
+                      const isAvailable = available > 0;
+
+                      return (
+                        <div
+                          key={category.id}
+                          onClick={() =>
+                            isAvailable && setSelectedCategory(category)
+                          }
+                          className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                            selectedCategory?.id === category.id
+                              ? "border-primary bg-primary/5"
+                              : isAvailable
+                              ? "border-border hover:border-primary/50"
+                              : "border-border bg-gray-50 cursor-not-allowed opacity-60"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div
+                                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                  selectedCategory?.id === category.id
+                                    ? "border-primary bg-primary"
+                                    : "border-gray-300"
+                                }`}
+                              >
+                                {selectedCategory?.id === category.id && (
+                                  <Check className="w-3 h-3 text-white" />
+                                )}
+                              </div>
+                              <div>
+                                <p className="font-semibold">{category.name}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {isAvailable
+                                    ? `${available} tiket tersisa`
+                                    : "Sold Out"}
+                                </p>
+                              </div>
+                            </div>
+                            <p className="text-lg font-bold text-primary">
+                              Rp {category.price.toLocaleString("id-ID")}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {errors.category && (
+                    <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                      <AlertCircle className="w-4 h-4" />
+                      {errors.category}
+                    </p>
+                  )}
+                </div>
+
+                {/* Quantity */}
+                {selectedCategory && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Jumlah Tiket
+                    </label>
+                    <div className="flex items-center gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        className="w-10 h-10 rounded-lg border border-border hover:border-primary transition-colors flex items-center justify-center"
+                      >
+                        -
+                      </button>
+                      <span className="text-xl font-semibold w-12 text-center">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setQuantity(Math.min(10, quantity + 1))}
+                        className="w-10 h-10 rounded-lg border border-border hover:border-primary transition-colors flex items-center justify-center"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Notes */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Catatan (Opsional)
+                  </label>
+                  <textarea
+                    name="notes"
+                    value={formData.notes}
+                    onChange={handleInputChange}
+                    rows="3"
+                    className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    placeholder="Tambahkan catatan jika diperlukan"
+                  />
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="w-full bg-primary text-white py-4 rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2"
+                >
+                  <CreditCard className="w-5 h-5" />
+                  Lanjut ke Pembayaran
+                </button>
+              </form>
+            </motion.div>
+          </div>
+
+          {/* Right: Summary */}
+          <div className="lg:col-span-1">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white rounded-xl p-6 shadow-md sticky top-8"
+            >
+              <h3 className="font-semibold text-lg mb-4">Ringkasan Pesanan</h3>
+
+              {/* Show Info */}
+              <div className="mb-6">
+                <img
+                  src={show.image}
+                  alt={show.title}
+                  className="w-full h-32 object-cover rounded-lg mb-3"
+                />
+                <h4 className="font-semibold mb-2">{show.title}</h4>
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    <span>
+                      {new Date(show.date).toLocaleDateString("id-ID")}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    <span>{show.time} WIB</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    <span>{show.location}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Price Breakdown */}
+              {selectedCategory && (
+                <div className="border-t border-border pt-4 space-y-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Kategori</span>
+                    <span className="font-medium">{selectedCategory.name}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      Harga per tiket
+                    </span>
+                    <span className="font-medium">
+                      Rp {selectedCategory.price.toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Jumlah</span>
+                    <span className="font-medium">{quantity} tiket</span>
+                  </div>
+                  <div className="border-t border-border pt-3 flex justify-between">
+                    <span className="font-semibold">Total</span>
+                    <span className="text-xl font-bold text-primary">
+                      Rp {totalPrice.toLocaleString("id-ID")}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TicketBookingPage;

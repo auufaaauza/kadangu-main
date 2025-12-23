@@ -4,116 +4,80 @@ import { Toaster } from "@/components/ui/toaster";
 
 // Layout
 import AppLayout from "@/components/layout/AppLayout";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 // --- Pages: Core ---
 import HomePage from "@/pages/HomePage";
-import ExplorePage from "@/pages/ExplorePage";
-import ProfilePage from "@/pages/ProfilePage";
-import WishlistPage from "@/pages/WishlistPage";
+import NewsPage from "@/pages/NewsPage";
+import ShowsPage from "@/pages/ShowsPage";
+import CategoryPage from "@/pages/CategoryPage";
+import TicketBookingPage from "@/pages/TicketBookingPage";
+import TalentBookingPage from "@/pages/TalentBookingPage";
+import BrowsePage from "@/pages/BrowsePage";
+import TalentDetailPage from "@/pages/TalentDetailPage";
+import ShowDetailPage from "@/pages/ShowDetailPage";
 import PaymentSuccessPage from "@/pages/PaymentSuccessPage";
-
-// --- Shows ---
-import { ShowPage } from "@/pages/Show/ShowPage";
-import ShowDetailPage from "@/pages/Show/detail/ShowDetailPage";
-
-// --- Dance ---
-import DancePage from "@/pages/Dance/DancePage";
-import DanceDetailPage from "@/pages/Dance/detail/DanceDetailPage";
-
-// --- News ---
-import NewsPage from "@/pages/News/NewsPage";
-import NewsDetailPage from "@/pages/News/detail/NewsDetailPage";
-
-// --- Music ---
-import { MusicPage } from "@/pages/Music/MusicPage";
-import { BookingPage } from "@/pages/Music/BookingPage";
-
-// --- Theater ---
-import TheaterPage from "@/pages/Theater/TheaterPage";
-import TheaterDetailPage from "@/pages/Theater/detail/TheaterDetailPage";
-
-// --- Art ---
-import { ArtPage } from "@/pages/Art/ArtPage";
-
-// --- Literature ---
-import { LiteraturePage } from "@/pages/Literature/LiteraturePage";
-
-// --- Film ---
-import { FilmPage } from "@/pages/Film/FilmPage";
-
-// --- Culture ---
-import { CulturePage } from "@/pages/Culture/CulturePage";
-
-// --- Workshop ---
-import { WorkshopPage } from "@/pages/Workshop/WorkshopPage";
-
-// --- Talent ---
-import TalentPage from "@/pages/Talent/TalentPage";
-import TalentDetailPage from "@/pages/Talent/detail/TalentDetailPage";
-
+import ProfilePage from "@/pages/ProfilePage";
+import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Auth Routes - No Layout */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-        {/* Layout wrapper */}
-        <Route element={<AppLayout />}>
+          {/* Layout wrapper */}
+          <Route element={<AppLayout />}>
+            {/* Homepage */}
+            <Route path="/" element={<HomePage />} />
 
-          {/* --- Core Routes --- */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/explore" element={<ExplorePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/wishlist" element={<WishlistPage />} />
-          <Route path="/payment-success" element={<PaymentSuccessPage />} />
+            {/* Browse/Explore - Unified page with filters */}
+            <Route path="/browse" element={<BrowsePage />} />
+            <Route path="/explore" element={<BrowsePage />} />
 
-          {/* --- Shows --- */}
-          <Route path="/shows" element={<ShowPage />} />
-          <Route path="/shows/detail/:id" element={<ShowDetailPage />} />
+            {/* News */}
+            <Route path="/news" element={<NewsPage />} />
 
-          {/* --- Dance --- */}
-          <Route path="/dance" element={<DancePage />} />
-          <Route path="/dance/detail/:id" element={<DanceDetailPage />} />
+            {/* Shows/Pertunjukan */}
+            <Route path="/shows" element={<ShowsPage />} />
+            <Route path="/shows/:showId/book" element={<TicketBookingPage />} />
 
-          {/* --- News --- */}
-          <Route path="/news" element={<NewsPage />} />
-          <Route path="/news/detail/:id" element={<NewsDetailPage />} />
+            {/* Category Pages - Talents */}
+            <Route path="/music" element={<CategoryPage />} />
+            <Route path="/dance" element={<CategoryPage />} />
+            <Route path="/theater" element={<CategoryPage />} />
+            <Route path="/art" element={<CategoryPage />} />
+            <Route path="/literature" element={<CategoryPage />} />
+            <Route path="/film" element={<CategoryPage />} />
+            <Route path="/culture" element={<CategoryPage />} />
+            <Route path="/workshop" element={<CategoryPage />} />
 
-          {/* --- Music --- */}
-          <Route path="/music" element={<MusicPage />} />
-          <Route path="/music/booking/:id" element={<BookingPage />} />
+            {/* Detail Pages */}
+            <Route path="/talent/:talentId" element={<TalentDetailPage />} />
+            <Route path="/shows/:showId" element={<ShowDetailPage />} />
 
-          {/* --- Theater --- */}
-          <Route path="/theater" element={<TheaterPage />} />
-          <Route path="/theater/detail/:id" element={<TheaterDetailPage />} />
+            {/* Booking Pages */}
+            <Route
+              path="/talent/:talentId/book"
+              element={<TalentBookingPage />}
+            />
+            <Route path="/shows/:showId/book" element={<TicketBookingPage />} />
 
-          {/* --- Art --- */}
-          <Route path="/art" element={<ArtPage />} />
+            {/* Payment & Profile */}
+            <Route path="/payment-success" element={<PaymentSuccessPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
+        </Routes>
 
-          {/* --- Literature --- */}
-          <Route path="/literature" element={<LiteraturePage />} />
-
-          {/* --- Film --- */}
-          <Route path="/film" element={<FilmPage />} />
-
-          {/* --- Culture --- */}
-          <Route path="/culture" element={<CulturePage />} />
-
-          {/* --- Workshop --- */}
-          <Route path="/workshop" element={<WorkshopPage />} />
-
-          {/* --- Talent --- */}
-          <Route path="/talent" element={<TalentPage />} />
-          <Route path="/talent/detail/:id" element={<TalentDetailPage />} />
-
-          {/* Dummy route */}
-          <Route path="/tickets" element={<ExplorePage />} />
-
-        </Route>
-      </Routes>
-
-      {/* Toaster for alerts */}
-      <Toaster />
-    </Router>
+        {/* Toaster for alerts */}
+        <Toaster />
+      </Router>
+    </AuthProvider>
   );
 }
