@@ -41,7 +41,7 @@ const ShowsPage = () => {
         const showsData = (response.data || response).map((show) => ({
           id: show.id,
           title: show.judul,
-          category: show.seniman?.nama || "Seni",
+          category: show.artist_group?.nama || show.artistGroup?.nama || "Seni",
           image: show.gambar
             ? `http://localhost:8000/storage/${show.gambar}`
             : "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
@@ -51,10 +51,10 @@ const ShowsPage = () => {
             minute: "2-digit",
           }),
           location: show.lokasi,
-          price: show.ticket_categories?.[0]?.price || show.harga || 100000,
-          quota: 200,
-          sold: 0,
-          rating: 4.8,
+          price: show.ticket_categories?.[0]?.harga || show.harga || 100000,
+          quota: show.kuota || 0,
+          sold: show.kuota - show.kuota_tersisa || 0,
+          rating: show.rating || 0,
           description: show.deskripsi || "Pertunjukan seni budaya",
         }));
 

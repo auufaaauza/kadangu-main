@@ -2,16 +2,26 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
 
 // Helper function for API calls
-const apiCall = async (endpoint, options = {}) => {
+export const apiCall = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   
   try {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      ...options.headers,
+    };
+
+    // Only add token if auth is not explicitly set to false
+    if (options.auth !== false) {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+    }
+
     const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        ...options.headers,
-      },
+      headers,
       ...options,
     });
 
@@ -45,7 +55,7 @@ export const fetchTalents = async (filters = {}) => {
   const queryString = params.toString();
   const endpoint = queryString ? `/talents?${queryString}` : '/talents';
   
-  return apiCall(endpoint);
+  return apiCall(endpoint, { auth: false });
 };
 
 /**
@@ -53,14 +63,14 @@ export const fetchTalents = async (filters = {}) => {
  * @param {number} id - Talent ID
  */
 export const fetchTalentById = async (id) => {
-  return apiCall(`/talents/${id}`);
+  return apiCall(`/talents/${id}`, { auth: false });
 };
 
 /**
  * Fetch all available genres
  */
 export const fetchGenres = async () => {
-  return apiCall('/talents/genres');
+  return apiCall('/talents/genres', { auth: false });
 };
 
 // ============================================
@@ -81,7 +91,7 @@ export const fetchShows = async (filters = {}) => {
   const queryString = params.toString();
   const endpoint = queryString ? `/pertunjukan?${queryString}` : '/pertunjukan';
   
-  return apiCall(endpoint);
+  return apiCall(endpoint, { auth: false });
 };
 
 /**
@@ -89,7 +99,7 @@ export const fetchShows = async (filters = {}) => {
  * @param {number} id - Show ID
  */
 export const fetchShowById = async (id) => {
-  return apiCall(`/pertunjukan/${id}`);
+  return apiCall(`/pertunjukan/${id}`, { auth: false });
 };
 
 // ============================================
@@ -109,7 +119,7 @@ export const fetchNews = async (filters = {}) => {
   const queryString = params.toString();
   const endpoint = queryString ? `/berita?${queryString}` : '/berita';
   
-  return apiCall(endpoint);
+  return apiCall(endpoint, { auth: false });
 };
 
 /**
@@ -117,7 +127,7 @@ export const fetchNews = async (filters = {}) => {
  * @param {number} id - News ID
  */
 export const fetchNewsById = async (id) => {
-  return apiCall(`/berita/${id}`);
+  return apiCall(`/berita/${id}`, { auth: false });
 };
 
 // ============================================
@@ -139,7 +149,7 @@ export const createTalentBooking = async (bookingData) => {
  * Fetch user's talent bookings
  */
 export const fetchUserTalentBookings = async () => {
-  return apiCall('/user/talent-bookings');
+  return apiCall('/talent-bookings');
 };
 
 /**
@@ -175,22 +185,22 @@ export const fetchUserTicketOrders = async () => {
 };
 
 // ============================================
-// CATEGORIES/SENIMAN APIs
+// ARTIST GROUPS APIs
 // ============================================
 
 /**
- * Fetch all categories (seniman)
+ * Fetch all artist groups
  */
-export const fetchCategories = async () => {
-  return apiCall('/seniman');
+export const fetchArtistGroups = async () => {
+  return apiCall('/artist-groups');
 };
 
 /**
- * Fetch category by ID
- * @param {number} id - Category ID
+ * Fetch artist group by ID
+ * @param {number} id - Artist Group ID
  */
-export const fetchCategoryById = async (id) => {
-  return apiCall(`/seniman/${id}`);
+export const fetchArtistGroupById = async (id) => {
+  return apiCall(`/artist-groups/${id}`);
 };
 
 // ============================================
@@ -257,9 +267,9 @@ export default {
   createTicketOrder,
   fetchUserTicketOrders,
   
-  // Categories
-  fetchCategories,
-  fetchCategoryById,
+  // Artist Groups
+  fetchArtistGroups,
+  fetchArtistGroupById,
   
   // Wishlist
   fetchWishlist,

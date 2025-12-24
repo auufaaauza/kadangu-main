@@ -11,41 +11,71 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { fetchShowById, createTicketOrder } from "@/lib/api";
+import { formatRupiah } from "@/lib/currency";
+import { useAuth } from "@/contexts/AuthContext";
 
 const TicketBookingPage = () => {
   const navigate = useNavigate();
   const { showId } = useParams();
+  const { user } = useAuth();
   const [show, setShow] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
     notes: "",
   });
   const [errors, setErrors] = useState({});
 
   // Mock data - replace with API call
   useEffect(() => {
-    setTimeout(() => {
-      setShow({
-        id: 1,
-        title: "Wayang Kulit Ramayana",
-        date: "2024-02-15",
-        time: "19:00",
-        location: "Gedung Kesenian Jakarta",
-        image:
-          "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
-        categories: [
-          { id: 1, name: "VIP", price: 300000, quota: 50, sold: 30 },
-          { id: 2, name: "Premium", price: 200000, quota: 100, sold: 60 },
-          { id: 3, name: "Regular", price: 150000, quota: 200, sold: 120 },
-        ],
-      });
-      setLoading(false);
-    }, 1000);
+    const loadShow = async () => {
+      setLoading(true);
+      try {
+        const response = await fetchShowById(showId);
+        const showData = response.data || response;
+
+        setShow({
+          id: showData.id,
+          title: showData.judul,
+          date: showData.tanggal_pertunjukan,
+          time: new Date(showData.tanggal_pertunjukan).toLocaleTimeString(
+            "id-ID",
+            {
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          ),
+          location: showData.lokasi,
+          image: showData.gambar
+            ? `http://localhost:8000/storage/${showData.gambar}`
+            : "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
+          category:
+            showData.artist_group?.nama || showData.artistGroup?.nama || "Seni",
+          categories: (showData.ticket_categories || []).map((cat) => ({
+            id: cat.id,
+            name: cat.nama,
+            price: parseFloat(cat.harga),
+            quota: cat.kuota,
+            sold: cat.kuota - cat.kuota_tersisa,
+            description: cat.deskripsi,
+          })),
+        });
+      } catch (error) {
+        console.error("Error loading show:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (showId) {
+      loadShow();
+    }
   }, [showId]);
 
   const handleInputChange = (e) => {
@@ -69,17 +99,37 @@ const TicketBookingPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Process booking
-      console.log("Booking data:", {
-        ...formData,
-        category: selectedCategory,
-        quantity,
-      });
-      // Navigate to payment
-      navigate("/payment");
+      setSubmitting(true);
+      try {
+        const orderData = {
+          pertunjukan_id: show.id,
+          ticket_category_id: selectedCategory.id,
+          jumlah_tiket: quantity,
+          // Following fields are usually handled by backend auth user,
+          // but we can pass them if needed or just for logging
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          notes: formData.notes,
+        };
+
+        const response = await createTicketOrder(orderData);
+        if (response.success || response.booking) {
+          navigate("/payment-success", {
+            state: { booking: response.booking },
+          });
+        }
+      } catch (error) {
+        console.error("Booking error:", error);
+        setErrors({
+          submit: "Terjadi kesalahan saat memesan tiket. Silakan coba lagi.",
+        });
+      } finally {
+        setSubmitting(false);
+      }
     }
   };
 
@@ -235,7 +285,7 @@ const TicketBookingPage = () => {
                               </div>
                             </div>
                             <p className="text-lg font-bold text-primary">
-                              Rp {category.price.toLocaleString("id-ID")}
+                              {formatRupiah(category.price)}
                             </p>
                           </div>
                         </div>
@@ -296,10 +346,17 @@ const TicketBookingPage = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-primary text-white py-4 rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2"
+                  disabled={submitting}
+                  className="w-full bg-primary text-white py-4 rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  <CreditCard className="w-5 h-5" />
-                  Lanjut ke Pembayaran
+                  {submitting ? (
+                    <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  ) : (
+                    <>
+                      <CreditCard className="w-5 h-5" />
+                      Lanjut ke Pembayaran
+                    </>
+                  )}
                 </button>
               </form>
             </motion.div>
@@ -353,7 +410,7 @@ const TicketBookingPage = () => {
                       Harga per tiket
                     </span>
                     <span className="font-medium">
-                      Rp {selectedCategory.price.toLocaleString("id-ID")}
+                      {formatRupiah(selectedCategory.price)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
@@ -363,7 +420,7 @@ const TicketBookingPage = () => {
                   <div className="border-t border-border pt-3 flex justify-between">
                     <span className="font-semibold">Total</span>
                     <span className="text-xl font-bold text-primary">
-                      Rp {totalPrice.toLocaleString("id-ID")}
+                      {formatRupiah(totalPrice)}
                     </span>
                   </div>
                 </div>

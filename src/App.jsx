@@ -21,6 +21,9 @@ import ProfilePage from "@/pages/ProfilePage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import BookingSuccessPage from "@/pages/BookingSuccessPage";
+import BookingDetailPage from "@/pages/BookingDetailPage";
+import InvoicePage from "@/pages/InvoicePage";
 
 export default function App() {
   return (
@@ -31,6 +34,9 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+          {/* Invoice Route - Outside AppLayout for clean print */}
+          <Route path="/invoice/:type/:id" element={<InvoicePage />} />
 
           {/* Layout wrapper */}
           <Route element={<AppLayout />}>
@@ -71,6 +77,11 @@ export default function App() {
 
             {/* Payment & Profile */}
             <Route path="/payment-success" element={<PaymentSuccessPage />} />
+            <Route
+              path="/booking-success/:id"
+              element={<BookingSuccessPage />}
+            />
+            <Route path="/booking/:id" element={<BookingDetailPage />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
         </Routes>

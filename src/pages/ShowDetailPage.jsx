@@ -39,7 +39,8 @@ const ShowDetailPage = () => {
         setShow({
           id: showData.id,
           title: showData.judul,
-          category: showData.seniman?.nama || "Seni",
+          category:
+            showData.artist_group?.nama || showData.artistGroup?.nama || "Seni",
           image: showData.gambar
             ? `http://localhost:8000/storage/${showData.gambar}`
             : "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
@@ -53,10 +54,17 @@ const ShowDetailPage = () => {
           ),
           location: showData.lokasi,
           description: showData.deskripsi || "Pertunjukan seni budaya",
-          ticketCategories: showData.ticket_categories || [],
-          quota: 200,
-          sold: 0,
-          rating: 4.8,
+          ticketCategories: (showData.ticket_categories || []).map((cat) => ({
+            id: cat.id,
+            name: cat.nama,
+            description: cat.deskripsi,
+            price: parseFloat(cat.harga),
+            quota: cat.kuota,
+            sold: cat.kuota - cat.kuota_tersisa,
+          })),
+          quota: showData.kuota || 0,
+          sold: showData.kuota - showData.kuota_tersisa || 0,
+          rating: showData.rating || 4.5,
         });
       } catch (err) {
         console.error("Error loading show:", err);

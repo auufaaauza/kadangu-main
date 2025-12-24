@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Search,
   Filter,
   Star,
   MapPin,
-  DollarSign,
   ArrowRight,
   X,
   CheckCircle,
+  Users,
 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { fetchTalents } from "@/lib/api";
+import { formatRupiah } from "@/lib/currency";
 
 const CategoryPage = () => {
   const navigate = useNavigate();
@@ -23,106 +24,147 @@ const CategoryPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedGenre, setSelectedGenre] = useState("all");
 
-  // Extract category from pathname
   const pathname = location.pathname.replace("/", "");
   const category = pathname || "music";
 
-  // Category configurations
+  // Category configs - All using teal-600 theme
   const categoryConfig = {
     music: {
       title: "Musik",
       subtitle: "Temukan musisi dan band untuk acara Anda",
-      icon: "🎵",
-      color: "text-red-500",
-      bgColor: "bg-red-500",
+      gradient: "from-teal-600 to-teal-700",
     },
     dance: {
       title: "Tari",
       subtitle: "Penari dan grup tari profesional",
-      icon: "💃",
-      color: "text-pink-500",
-      bgColor: "bg-pink-500",
+      gradient: "from-teal-600 to-teal-700",
     },
     theater: {
       title: "Teater",
       subtitle: "Grup teater dan aktor profesional",
-      icon: "🎭",
-      color: "text-indigo-500",
-      bgColor: "bg-indigo-500",
+
+      gradient: "from-teal-600 to-teal-700",
     },
     art: {
       title: "Seni Rupa",
-      subtitle: "Seniman visual dan pelukis",
-      icon: "🎨",
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-500",
+      subtitle: "Seniman dan pelukis berbakat",
+ 
+      gradient: "from-teal-600 to-teal-700",
     },
     literature: {
       title: "Sastra",
-      subtitle: "Penulis dan penyair",
-      icon: "📚",
-      color: "text-green-500",
-      bgColor: "bg-green-500",
+      subtitle: "Penulis dan penyair profesional",
+ 
+      gradient: "from-teal-600 to-teal-700",
     },
     film: {
       title: "Film",
       subtitle: "Filmmaker dan videografer",
-      icon: "🎬",
-      color: "text-cyan-500",
-      bgColor: "bg-cyan-500",
+  
+      gradient: "from-teal-600 to-teal-700",
     },
     culture: {
       title: "Budaya",
-      subtitle: "Pelestari budaya tradisional",
-      icon: "🏛️",
-      color: "text-amber-500",
-      bgColor: "bg-amber-500",
+      subtitle: "Pelestari budaya dan tradisi",
+  
+      gradient: "from-teal-600 to-teal-700",
     },
     workshop: {
       title: "Workshop",
       subtitle: "Instruktur dan fasilitator workshop",
-      icon: "🤝",
-      color: "text-teal-500",
-      bgColor: "bg-teal-500",
+    
+      gradient: "from-teal-600 to-teal-700",
     },
   };
 
   const currentCategory = categoryConfig[category] || categoryConfig.music;
 
-  // Fetch talents from API
   useEffect(() => {
     const loadTalents = async () => {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await fetchTalents({
-          category: currentCategory.title,
-          genre: selectedGenre !== "all" ? selectedGenre : undefined,
-          search: searchQuery || undefined,
-        });
+        const response = await fetchTalents();
 
-        const talentsData = (response.data || response).map((talent) => ({
+        const allTalents = (response.data || response || []).map((talent) => ({
           id: talent.id,
           name: talent.name,
           genre: talent.genre,
+          category: talent.category,
           image: talent.photo
             ? `http://localhost:8000/storage/${talent.photo}`
             : "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800",
-          location: talent.seniman?.nama || "Indonesia",
-          basePrice: talent.base_price,
-          rating: 4.8,
-          reviewCount: 0,
+          location: talent.location || "Indonesia",
+          basePrice: talent.base_price || 0,
+          rating: talent.rating || 4.8,
+          reviewCount: talent.review_count || 0,
           verified: talent.status === "active",
           packages: talent.packages?.length || 0,
           description:
             talent.bio || talent.service_description || "Talent profesional",
         }));
 
-        setTalents(talentsData);
+        // Debug: Log all talents
+        console.log("All talents:", allTalents);
+        console.log("Current category:", currentCategory.title);
+
+        // Filter by category - flexible matching
+        const filtered = allTalents.filter((talent) => {
+          // Category matching - check multiple fields with partial match
+          const talentCategory = (talent.category || "").toLowerCase().trim();
+          const talentGenre = (talent.genre || "").toLowerCase().trim();
+          const pageCategory = currentCategory.title.toLowerCase().trim();
+
+          // Match if category OR genre contains the page category (or vice versa)
+          const matchesCategory =
+            talentCategory === pageCategory ||
+            talentGenre === pageCategory ||
+            talentCategory.includes(pageCategory) ||
+            talentGenre.includes(pageCategory) ||
+            pageCategory.includes(talentCategory) ||
+            pageCategory.includes(talentGenre);
+
+          const matchesSearch =
+            !searchQuery ||
+            talent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            talent.description
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
+
+          const matchesGenre =
+            selectedGenre === "all" || talent.genre === selectedGenre;
+
+          return matchesCategory && matchesSearch && matchesGenre;
+        });
+
+        console.log("Filtered talents:", filtered);
+        console.log("Filter details:", {
+          total: allTalents.length,
+          filtered: filtered.length,
+          pageCategory: currentCategory.title,
+        });
+
+        // If no talents match, show all talents with warning
+        if (filtered.length === 0 && allTalents.length > 0) {
+          console.warn(
+            `⚠️ No talents found for category "${currentCategory.title}". Showing all talents instead.`
+          );
+          console.log(
+            "Talent categories:",
+            allTalents.map((t) => ({
+              name: t.name,
+              category: t.category,
+              genre: t.genre,
+            }))
+          );
+          setTalents(allTalents);
+        } else {
+          setTalents(filtered);
+        }
       } catch (err) {
         console.error("Error loading talents:", err);
-        setError("Gagal memuat data talent. Silakan coba lagi.");
+        setError("Gagal memuat data. Silakan coba lagi.");
         setTalents([]);
       } finally {
         setLoading(false);
@@ -130,189 +172,219 @@ const CategoryPage = () => {
     };
 
     loadTalents();
-  }, [category, selectedGenre, searchQuery, currentCategory.title]);
+  }, [category, searchQuery, selectedGenre]);
 
-  const genres = ["all", "Tradisional", "Modern", "Klasik", "Kontemporer"];
-
-  const filteredTalents = talents.filter((talent) => {
-    const matchesSearch =
-      talent.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      talent.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesGenre =
-      selectedGenre === "all" || talent.genre === selectedGenre;
-    return matchesSearch && matchesGenre;
-  });
+  const genres = ["all", "Solo", "Band", "Grup", "Orkestra", "Tradisional"];
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="bg-primary text-white py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-5xl">{currentCategory.icon}</span>
-              <h1 className="text-4xl md:text-5xl font-bold">
-                {currentCategory.title}
-              </h1>
+      {/* Hero - Simpler, More Natural */}
+      <div
+        className={`bg-gradient-to-br ${currentCategory.gradient} text-white py-16 md:py-20 px-4`}
+      >
+        <div className="max-w-7xl mx-auto text-center">
+          <span className="text-5xl md:text-6xl mb-4 inline-block">
+            {currentCategory.icon}
+          </span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-3">
+            {currentCategory.title}
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto">
+            {currentCategory.subtitle}
+          </p>
+
+          {talents.length > 0 && (
+            <div className="mt-6 inline-flex items-center gap-4 bg-white/10 backdrop-blur-sm rounded-full px-5 py-2.5">
+              <span className="flex items-center gap-1.5">
+                <Users className="w-4 h-4" />
+                {talents.length} Talent Tersedia
+              </span>
             </div>
-            <p className="text-lg text-white/90 max-w-2xl">
-              {currentCategory.subtitle}
-            </p>
-          </motion.div>
+          )}
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Search & Filter */}
-        <div className="mb-8 flex flex-col md:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-            <input
-              type="text"
-              placeholder={`Cari ${currentCategory.title.toLowerCase()}...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
-            />
+        <div className="mb-6">
+          <div className="flex flex-col md:flex-row gap-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <input
+                type="text"
+                placeholder={`Cari ${currentCategory.title.toLowerCase()}...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 rounded-xl border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`px-5 py-3 rounded-xl font-medium flex items-center gap-2 ${
+                showFilters
+                  ? "bg-primary text-white"
+                  : "bg-card border border-border hover:border-primary"
+              }`}
+            >
+              <Filter className="w-4 h-4" />
+              Filter
+            </button>
           </div>
 
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            className="px-6 py-3 bg-white border border-border rounded-xl hover:border-primary transition-colors flex items-center gap-2"
-          >
-            <Filter className="w-5 h-5" />
-            Filter
-          </button>
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mt-3 p-4 bg-card rounded-xl border border-border"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold">Genre</h3>
+                  <button
+                    onClick={() => setShowFilters(false)}
+                    className="p-1 hover:bg-muted rounded"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {genres.map((genre) => (
+                    <button
+                      key={genre}
+                      onClick={() => setSelectedGenre(genre)}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium ${
+                        selectedGenre === genre
+                          ? "bg-primary text-white"
+                          : "bg-muted hover:bg-muted/80"
+                      }`}
+                    >
+                      {genre === "all" ? "Semua" : genre}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Filter Panel */}
-        {showFilters && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="mb-8 bg-white rounded-xl p-6 border border-border"
-          >
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-lg">Filter Genre</h3>
-              <button onClick={() => setShowFilters(false)}>
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {genres.map((genre) => (
-                <button
-                  key={genre}
-                  onClick={() => setSelectedGenre(genre)}
-                  className={`px-4 py-2 rounded-lg transition-all ${
-                    selectedGenre === genre
-                      ? "bg-primary text-white"
-                      : "bg-gray-100 hover:bg-gray-200"
-                  }`}
-                >
-                  {genre === "all" ? "Semua Genre" : genre}
-                </button>
-              ))}
-            </div>
-          </motion.div>
+        {!loading && talents.length > 0 && (
+          <p className="mb-4 text-sm text-muted-foreground">
+            Ditemukan {talents.length} talent
+          </p>
         )}
 
-        {/* Talents Grid */}
-        {loading ? (
-          <div className="text-center py-20">
-            <div className="inline-block w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-            <p className="mt-4 text-muted-foreground">Memuat talent...</p>
+        {/* Loading */}
+        {loading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-card rounded-xl p-4 animate-pulse">
+                <div className="w-full h-48 bg-muted rounded-lg mb-3"></div>
+                <div className="h-5 bg-muted rounded mb-2"></div>
+                <div className="h-4 bg-muted rounded w-2/3"></div>
+              </div>
+            ))}
           </div>
-        ) : filteredTalents.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredTalents.map((talent, index) => (
+        )}
+
+        {/* Error */}
+        {error && (
+          <div className="text-center py-12">
+            <p className="text-lg text-muted-foreground">{error}</p>
+          </div>
+        )}
+
+        {/* Empty */}
+        {!loading && !error && talents.length === 0 && (
+          <div className="text-center py-16">
+            <div className="text-7xl mb-4">{currentCategory.icon}</div>
+            <h3 className="text-2xl font-bold mb-2">Belum Ada Talent</h3>
+            <p className="text-muted-foreground mb-6">
+              Talent {currentCategory.title} akan segera hadir
+            </p>
+            <button
+              onClick={() => navigate("/browse")}
+              className="px-6 py-3 bg-primary text-white rounded-xl font-semibold hover:shadow-lg transition-shadow"
+            >
+              Jelajahi Kategori Lain
+            </button>
+          </div>
+        )}
+
+        {/* Talent Grid */}
+        {!loading && !error && talents.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {talents.map((talent, index) => (
               <motion.div
                 key={talent.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all group cursor-pointer"
+                transition={{ delay: index * 0.05 }}
+                className="group cursor-pointer"
                 onClick={() => navigate(`/talent/${talent.id}`)}
               >
-                {/* Image */}
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={talent.image}
-                    alt={talent.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="bg-secondary text-foreground px-3 py-1 rounded-full text-xs font-medium">
-                      {talent.genre}
-                    </span>
-                  </div>
-                  {talent.verified && (
-                    <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm p-1.5 rounded-full">
-                      <CheckCircle className="w-5 h-5 text-primary fill-primary" />
-                    </div>
-                  )}
-                </div>
+                <div className="bg-card rounded-xl overflow-hidden border border-border hover:border-primary hover:shadow-lg transition-all">
+                  <div className="relative h-48 overflow-hidden">
+                    <img
+                      src={talent.image}
+                      alt={talent.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="text-lg font-bold mb-1 text-foreground group-hover:text-primary transition-colors line-clamp-1">
-                    {talent.name}
-                  </h3>
+                    {talent.verified && (
+                      <div className="absolute top-3 right-3 bg-green-500 text-white px-2.5 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        Verified
+                      </div>
+                    )}
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium text-sm">
-                        {talent.rating}
+                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-full flex items-center gap-1 text-sm">
+                      <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                      <span className="font-semibold">{talent.rating}</span>
+                      <span className="text-xs text-muted-foreground">
+                        ({talent.reviewCount})
                       </span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      ({talent.reviewCount} ulasan)
-                    </span>
                   </div>
 
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                    {talent.description}
-                  </p>
+                  <div className="p-4">
+                    <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
+                      {talent.name}
+                    </h3>
 
-                  {/* Info */}
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-3">
                       <MapPin className="w-4 h-4" />
-                      <span>{talent.location}</span>
+                      {talent.location}
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <DollarSign className="w-4 h-4" />
-                      <span>{talent.packages} paket tersedia</span>
-                    </div>
-                  </div>
 
-                  {/* Price & Button */}
-                  <div className="flex items-center justify-between pt-4 border-t border-border">
-                    <div>
-                      <p className="text-xs text-muted-foreground">
-                        Mulai dari
-                      </p>
-                      <p className="text-xl font-bold text-primary">
-                        Rp {(talent.basePrice / 1000000).toFixed(1)}jt
-                      </p>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {talent.description}
+                    </p>
+
+                    <div className="flex items-center justify-between pt-3 border-t border-border">
+                      <div>
+                        <div className="text-xs text-muted-foreground">
+                          Mulai dari
+                        </div>
+                        <div className="font-bold text-primary">
+                          {formatRupiah(talent.basePrice)}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                        <Users className="w-4 h-4" />
+                        {talent.packages} Paket
+                      </div>
                     </div>
-                    <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-1 group/btn">
-                      Lihat
-                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+
+                    <button className="w-full mt-3 py-2.5 bg-primary text-white rounded-lg font-semibold hover:shadow-md transition-shadow flex items-center justify-center gap-2">
+                      Lihat Detail
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
               </motion.div>
             ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 bg-white rounded-xl">
-            <p className="text-muted-foreground">Tidak ada talent ditemukan</p>
           </div>
         )}
       </div>

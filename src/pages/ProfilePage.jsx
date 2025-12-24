@@ -12,6 +12,7 @@ import {
   Edit,
   Package,
   Ticket as TicketIcon,
+  ArrowRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -54,8 +55,16 @@ const ProfilePage = () => {
           fetchUserTicketOrders().catch(() => ({ data: [] })),
         ]);
 
-        setTalentBookings(bookingsResponse.data || []);
-        setTicketOrders(ordersResponse.data || []);
+        setTalentBookings(
+          Array.isArray(bookingsResponse)
+            ? bookingsResponse
+            : bookingsResponse.data || []
+        );
+        setTicketOrders(
+          Array.isArray(ordersResponse)
+            ? ordersResponse
+            : ordersResponse.data || []
+        );
       } catch (error) {
         console.error("Error loading user data:", error);
       } finally {
@@ -90,17 +99,30 @@ const ProfilePage = () => {
       label: "Edit Profil",
       description: "Ubah informasi pribadi Anda",
       action: () => setIsEditModalOpen(true),
+      color: "from-blue-500 to-blue-600",
+      iconBg: "bg-blue-50",
+      iconColor: "text-blue-600",
     },
     {
       icon: Settings,
       label: "Pengaturan",
       description: "Kelola preferensi akun",
+      action: () => console.log("Settings clicked"),
+      color: "from-purple-500 to-purple-600",
+      iconBg: "bg-purple-50",
+      iconColor: "text-purple-600",
     },
     {
       icon: Calendar,
       label: "Riwayat Pesanan",
       description: "Lihat semua pesanan Anda",
-      action: () => setActiveTab("all"),
+      action: () => {
+        setActiveTab("all");
+        window.scrollTo({ top: 400, behavior: "smooth" });
+      },
+      color: "from-green-500 to-green-600",
+      iconBg: "bg-green-50",
+      iconColor: "text-green-600",
     },
     {
       icon: LogOut,
@@ -111,6 +133,9 @@ const ProfilePage = () => {
         logout();
         navigate("/login");
       },
+      color: "from-red-500 to-red-600",
+      iconBg: "bg-red-50",
+      iconColor: "text-red-600",
     },
   ];
 
@@ -146,16 +171,17 @@ const ProfilePage = () => {
       package: booking.package?.name || "-",
       date: booking.event_date,
       status: booking.status,
-      total: booking.package?.price || 0,
+      total: booking.total_price || 0,
     })),
     ...ticketOrders.map((order) => ({
       id: order.id,
       type: "ticket",
       title: order.pertunjukan?.judul || "Event Ticket",
-      category: order.ticket_category?.name || "-",
+      category:
+        order.ticket_category?.nama || order.ticket_category?.name || "-",
       date: order.pertunjukan?.tanggal_pertunjukan,
       status: order.status,
-      total: order.total_price || 0,
+      total: order.total_harga || 0,
     })),
   ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -340,9 +366,32 @@ const ProfilePage = () => {
                             </div>
                           </div>
                           <div className="flex gap-3 pt-4 border-t border-gray-100">
-                            <Button className="flex-1">Lihat Detail</Button>
+                            <Button
+                              className="flex-1"
+                              onClick={() => {
+                                if (order.type === "talent") {
+                                  navigate(`/booking/${order.id}`);
+                                } else {
+                                  // For tickets, maybe redirect to invoice or show detail modal (future dev)
+                                  // For now, let's just log or maybe alert
+                                  // Or perhaps we can reuse payment-success page if it supports viewing by ID
+                                  // navigate(`/payment-success?order_id=${order.id}`);
+                                }
+                              }}
+                            >
+                              Lihat Detail
+                            </Button>
                             {order.status === "confirmed" && (
-                              <Button variant="outline" className="px-6">
+                              <Button
+                                variant="outline"
+                                className="px-6"
+                                onClick={() =>
+                                  window.open(
+                                    `/invoice/${order.type}/${order.id}`,
+                                    "_blank"
+                                  )
+                                }
+                              >
                                 Download Invoice
                               </Button>
                             )}
@@ -378,43 +427,48 @@ const ProfilePage = () => {
             )}
 
             {/* Menu Items */}
-            <div className="grid gap-3 mt-8">
+            <div className="grid gap-4 mt-8">
               {menuItems.map((item, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <Card
-                    className="cursor-pointer hover:shadow-md transition-shadow"
+                    className={`cursor-pointer transition-all duration-300 border-2 ${
+                      item.danger
+                        ? "hover:border-red-300 hover:shadow-lg hover:shadow-red-100"
+                        : "hover:border-primary/30 hover:shadow-lg"
+                    }`}
                     onClick={item.action}
                   >
-                    <CardContent className="p-4">
+                    <CardContent className="p-5">
                       <div className="flex items-center gap-4">
                         <div
-                          className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                            item.danger ? "bg-red-50" : "bg-gray-50"
-                          }`}
+                          className={`w-14 h-14 rounded-xl flex items-center justify-center ${item.iconBg} transition-transform duration-300 hover:scale-110`}
                         >
-                          <item.icon
-                            className={`w-6 h-6 ${
-                              item.danger ? "text-red-600" : "text-gray-600"
-                            }`}
-                          />
+                          <item.icon className={`w-7 h-7 ${item.iconColor}`} />
                         </div>
                         <div className="flex-1">
                           <h3
-                            className={`font-semibold ${
+                            className={`font-semibold text-lg ${
                               item.danger ? "text-red-600" : "text-gray-900"
                             }`}
                           >
                             {item.label}
                           </h3>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-sm text-gray-500 mt-0.5">
                             {item.description}
                           </p>
                         </div>
+                        <ArrowRight
+                          className={`w-5 h-5 ${
+                            item.danger ? "text-red-400" : "text-gray-400"
+                          } transition-transform duration-300`}
+                        />
                       </div>
                     </CardContent>
                   </Card>

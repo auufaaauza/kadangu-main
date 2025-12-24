@@ -85,24 +85,6 @@ const Navbar = () => {
               </h1>
             </div>
           </div>
-
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <Button
-              onClick={() => handleAction('Keranjang')}
-              variant="ghost"
-              size="icon"
-              className="rounded-full text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--primary))] border border-[hsl(var(--border))] backdrop-blur-sm transition-colors duration-200 h-8 w-8 sm:h-9 sm:w-9"
-            >
-              <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
-             <Button
-              onClick={() => handleAction('Login')}
-              className="rounded-full bg-[hsl(var(--primary))] hover:bg-[hsl(var(--accent))] text-white font-semibold shadow-md shadow-[hsl(var(--primary))]/30 border border-[hsl(var(--primary))]/20 transition-colors duration-200 h-8 px-3 sm:h-9 sm:px-4 text-sm"
-            >
-              <LogIn className="w-4 h-4 mr-0 md:mr-1.5" />
-              <span className="hidden md:inline">Masuk</span>
-            </Button>
-          </div>
           </div>
         </div>
       </div>

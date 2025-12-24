@@ -8,23 +8,25 @@ import {
   Check,
   AlertCircle,
   Package,
-  DollarSign,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchTalentById, createTalentBooking } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { formatRupiah } from "@/lib/currency";
 
 const TalentBookingPage = () => {
   const navigate = useNavigate();
   const { talentId } = useParams();
+  const { user } = useAuth();
   const [talent, setTalent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
+    name: user?.name || "",
+    email: user?.email || "",
+    phone: user?.phone || "",
     eventDate: "",
     eventTime: "",
     eventLocation: "",
@@ -49,7 +51,10 @@ const TalentBookingPage = () => {
           image: talentData.photo
             ? `http://localhost:8000/storage/${talentData.photo}`
             : "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800",
-          location: talentData.seniman?.nama || "Indonesia",
+          location:
+            talentData.artist_group?.nama ||
+            talentData.artistGroup?.nama ||
+            "Indonesia",
           packages: (talentData.packages || []).map((pkg) => ({
             id: pkg.id,
             name: pkg.name,
@@ -398,7 +403,7 @@ const TalentBookingPage = () => {
                               </div>
                             </div>
                             <p className="text-xl font-bold text-primary whitespace-nowrap ml-4">
-                              Rp {(pkg.price / 1000000).toFixed(1)}jt
+                              {formatRupiah(pkg.price)}
                             </p>
                           </div>
 
@@ -447,10 +452,7 @@ const TalentBookingPage = () => {
                       Memproses...
                     </>
                   ) : (
-                    <>
-                      <DollarSign className="w-5 h-5" />
-                      Kirim Permintaan Booking
-                    </>
+                    <>Kirim Permintaan Booking</>
                   )}
                 </button>
               </form>
@@ -508,7 +510,7 @@ const TalentBookingPage = () => {
                   <div className="border-t border-border pt-3 flex justify-between">
                     <span className="font-semibold">Total</span>
                     <span className="text-xl font-bold text-primary">
-                      Rp {selectedPackage.price.toLocaleString("id-ID")}
+                      {formatRupiah(selectedPackage.price)}
                     </span>
                   </div>
                 </div>

@@ -63,3 +63,6 @@ storybook-static/
 .firebase/
 .vercel
 .env.example
+INTEGRATION_CROSSCHECK.md
+INTEGRATION_COMPLETE.md
+SUMMARY_WHILE_AWAY.md

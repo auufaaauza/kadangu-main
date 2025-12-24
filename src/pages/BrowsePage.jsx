@@ -8,7 +8,6 @@ import {
   Calendar,
   Clock,
   Users,
-  DollarSign,
   ArrowRight,
   CheckCircle,
   Ticket,
@@ -48,30 +47,39 @@ const BrowsePage = () => {
 
       try {
         if (mainFilter === "booking") {
-          // Fetch talents
+          // Fetch ALL talents (don't filter by genre in API)
           const response = await fetchTalents({
-            genre: selectedGenre !== "all" ? selectedGenre : undefined,
             search: searchQuery || undefined,
           });
 
-          // Transform API response to match our component structure
-          const talents = (response.data || response).map((talent) => ({
+          // Transform and filter on frontend
+          let talents = (response.data || response).map((talent) => ({
             id: talent.id,
             type: "talent",
             name: talent.name,
             genre: talent.genre,
+            category: talent.category,
             image: talent.photo
               ? `http://localhost:8000/storage/${talent.photo}`
               : "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800",
-            location: talent.seniman?.nama || "Indonesia",
-            basePrice: talent.base_price,
-            rating: 4.8, // You can add rating to backend later
-            reviewCount: 0,
+            location: talent.location || "Indonesia",
+            basePrice: talent.base_price || 0,
+            rating: talent.rating || 0,
+            reviewCount: talent.review_count || 0,
             verified: talent.status === "active",
             packages: talent.packages?.length || 0,
             description:
               talent.bio || talent.service_description || "Talent profesional",
           }));
+
+          // Frontend filter by category (not genre!)
+          if (selectedGenre !== "all") {
+            talents = talents.filter(
+              (t) =>
+                t.category?.toLowerCase() === selectedGenre.toLowerCase() ||
+                t.genre?.toLowerCase().includes(selectedGenre.toLowerCase())
+            );
+          }
 
           setItems(talents);
         } else {
@@ -86,7 +94,7 @@ const BrowsePage = () => {
             id: show.id,
             type: "show",
             title: show.judul,
-            genre: show.seniman?.nama || "Seni",
+            genre: show.artist_group?.nama || show.artistGroup?.nama || "Seni",
             image: show.gambar
               ? `http://localhost:8000/storage/${show.gambar}`
               : "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
@@ -96,10 +104,10 @@ const BrowsePage = () => {
               { hour: "2-digit", minute: "2-digit" }
             ),
             location: show.lokasi,
-            price: show.ticket_categories?.[0]?.price || show.harga || 100000,
-            quota: 200, // You can add this to backend
-            sold: 0,
-            rating: 4.8,
+            price: show.ticket_categories?.[0]?.harga || show.harga || 0,
+            quota: show.kuota || 0,
+            sold: show.kuota - show.kuota_tersisa || 0,
+            rating: show.rating || 4.5,
             description: show.deskripsi || "Pertunjukan seni budaya",
           }));
 
@@ -331,10 +339,11 @@ const BrowsePage = () => {
                               <MapPin className="w-4 h-4" />
                               <span>{item.location}</span>
                             </div>
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                              <DollarSign className="w-4 h-4" />
-                              <span>{item.packages} paket tersedia</span>
-                            </div>
+                            {item.packages > 0 && (
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <span>{item.packages} paket tersedia</span>
+                              </div>
+                            )}
                           </>
                         ) : (
                           <>
@@ -366,14 +375,23 @@ const BrowsePage = () => {
                       {/* Price & Button */}
                       <div className="flex items-center justify-between pt-4 border-t border-border">
                         <div>
-                          <p className="text-xs text-muted-foreground">
-                            Mulai dari
-                          </p>
-                          <p className="text-xl font-bold text-primary">
-                            {item.type === "talent"
-                              ? formatRupiah(item.basePrice, true)
-                              : formatRupiah(item.price)}
-                          </p>
+                          {(item.type === "talent" && item.basePrice > 0) ||
+                          (item.type === "show" && item.price > 0) ? (
+                            <>
+                              <p className="text-xs text-muted-foreground">
+                                Mulai dari
+                              </p>
+                              <p className="text-xl font-bold text-primary">
+                                {item.type === "talent"
+                                  ? formatRupiah(item.basePrice, true)
+                                  : formatRupiah(item.price)}
+                              </p>
+                            </>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">
+                              Hubungi untuk harga
+                            </p>
+                          )}
                         </div>
                         <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-1 group/btn">
                           {item.type === "talent" ? "Lihat" : "Beli"}

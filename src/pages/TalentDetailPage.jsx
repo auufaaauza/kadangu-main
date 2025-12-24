@@ -7,7 +7,6 @@ import {
   CheckCircle,
   Package,
   Clock,
-  DollarSign,
   Share2,
   Heart,
 } from "lucide-react";
@@ -44,10 +43,13 @@ const TalentDetailPage = () => {
           image: talentData.photo
             ? `http://localhost:8000/storage/${talentData.photo}`
             : "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=800",
-          location: talentData.seniman?.nama || "Indonesia",
+          location:
+            talentData.artist_group?.nama ||
+            talentData.artistGroup?.nama ||
+            "Indonesia",
           bio: talentData.bio || "Talent profesional",
-          rating: 4.8,
-          reviewCount: 0,
+          rating: talentData.rating || 0,
+          reviewCount: talentData.review_count || 0,
           verified: talentData.status === "active",
           packages: (talentData.packages || []).map((pkg) => ({
             id: pkg.id,
@@ -78,13 +80,18 @@ const TalentDetailPage = () => {
   // Check if talent is in wishlist
   useEffect(() => {
     const checkIfInWishlist = async () => {
-      if (!isAuthenticated || !talentId) return;
+      if (!isAuthenticated || !talentId) {
+        setIsInWishlist(false);
+        return;
+      }
 
       try {
         const response = await checkWishlist("talent", talentId);
         setIsInWishlist(response.inWishlist || false);
       } catch (error) {
-        console.error("Error checking wishlist:", error);
+        // Silently fail - user just won't see wishlist status
+        console.log("Wishlist check skipped:", error.message);
+        setIsInWishlist(false);
       }
     };
 
@@ -335,7 +342,6 @@ const TalentDetailPage = () => {
                     onClick={() => navigate(`/talent/${talent.id}/book`)}
                     className="w-full bg-primary text-white py-4 rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2"
                   >
-                    <DollarSign className="w-5 h-5" />
                     Booking Sekarang
                   </button>
 

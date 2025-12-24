@@ -121,7 +121,40 @@ const BannerSlide = ({ banner, isCenter }) => {
 
 const Banner = ({ banners = [] }) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [apiBanners, setApiBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
   const swiperRef = useRef(null);
+
+  // Fetch banners from API
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+          }/banners`
+        );
+        const data = await response.json();
+
+        if (data.success && data.data.length > 0) {
+          // Map API data to banner format
+          const mappedBanners = data.data.map((banner) => ({
+            image: banner.image,
+            title: banner.title,
+            href: banner.link,
+            category: null, // Optional: add category field to backend if needed
+          }));
+          setApiBanners(mappedBanners);
+        }
+      } catch (error) {
+        console.error("Error fetching banners:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBanners();
+  }, []);
 
   // Fallback banners
   const defaultBanners = [
@@ -151,7 +184,8 @@ const Banner = ({ banners = [] }) => {
     },
   ];
 
-  const displayBanners = banners.length ? banners : defaultBanners;
+  // Use API banners if available, otherwise use default
+  const displayBanners = apiBanners.length > 0 ? apiBanners : defaultBanners;
 
   return (
     <div className="relative w-full bg-transparent">
@@ -164,17 +198,33 @@ const Banner = ({ banners = [] }) => {
             disableOnInteraction: false,
           }}
           speed={1200}
-          loop={true}
-          loopAdditionalSlides={2}
+          loop={displayBanners.length >= 3}
+          loopAdditionalSlides={displayBanners.length >= 3 ? 2 : 0}
           centeredSlides
           slidesPerView={3}
+          slidesPerGroup={1}
           spaceBetween={28}
           centeredSlidesBounds
           className="banner-swiper overflow-visible px-2 sm:px-4 lg:px-6 py-8"
           breakpoints={{
-            320: { slidesPerView: 1, spaceBetween: 16, centeredSlides: true },
-            640: { slidesPerView: 2, spaceBetween: 20, centeredSlides: true },
-            1024: { slidesPerView: 3, spaceBetween: 30, centeredSlides: true },
+            320: {
+              slidesPerView: 1,
+              slidesPerGroup: 1,
+              spaceBetween: 16,
+              centeredSlides: true,
+            },
+            640: {
+              slidesPerView: 2,
+              slidesPerGroup: 1,
+              spaceBetween: 20,
+              centeredSlides: true,
+            },
+            1024: {
+              slidesPerView: 3,
+              slidesPerGroup: 1,
+              spaceBetween: 30,
+              centeredSlides: true,
+            },
           }}
           onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
         >
