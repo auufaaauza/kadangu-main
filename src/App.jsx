@@ -23,8 +23,8 @@ import RegisterPage from "@/pages/RegisterPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import BookingSuccessPage from "@/pages/BookingSuccessPage";
 import BookingDetailPage from "@/pages/BookingDetailPage";
+import TicketDetailPage from "@/pages/TicketDetailPage";
 import InvoicePage from "@/pages/InvoicePage";
-
 export default function App() {
   return (
     <AuthProvider>
@@ -42,18 +42,14 @@ export default function App() {
           <Route element={<AppLayout />}>
             {/* Homepage */}
             <Route path="/" element={<HomePage />} />
-
             {/* Browse/Explore - Unified page with filters */}
             <Route path="/browse" element={<BrowsePage />} />
             <Route path="/explore" element={<BrowsePage />} />
-
             {/* News */}
             <Route path="/news" element={<NewsPage />} />
-
             {/* Shows/Pertunjukan */}
             <Route path="/shows" element={<ShowsPage />} />
             <Route path="/shows/:showId/book" element={<TicketBookingPage />} />
-
             {/* Category Pages - Talents */}
             <Route path="/music" element={<CategoryPage />} />
             <Route path="/dance" element={<CategoryPage />} />
@@ -63,18 +59,15 @@ export default function App() {
             <Route path="/film" element={<CategoryPage />} />
             <Route path="/culture" element={<CategoryPage />} />
             <Route path="/workshop" element={<CategoryPage />} />
-
             {/* Detail Pages */}
             <Route path="/talent/:talentId" element={<TalentDetailPage />} />
             <Route path="/shows/:showId" element={<ShowDetailPage />} />
-
             {/* Booking Pages */}
             <Route
               path="/talent/:talentId/book"
               element={<TalentBookingPage />}
             />
             <Route path="/shows/:showId/book" element={<TicketBookingPage />} />
-
             {/* Payment & Profile */}
             <Route path="/payment-success" element={<PaymentSuccessPage />} />
             <Route
@@ -82,7 +75,8 @@ export default function App() {
               element={<BookingSuccessPage />}
             />
             <Route path="/booking/:id" element={<BookingDetailPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/order/ticket/:id" element={<TicketDetailPage />} />
+            <Route path="/profile" element={<ProfilePage />} />{" "}
           </Route>
         </Routes>
 

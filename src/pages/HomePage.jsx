@@ -3,6 +3,8 @@ import { Helmet } from "react-helmet";
 import AutoCarousel from "@/components/sections/AutoCarousel";
 import FeatureMenu from "@/components/FeatureMenu";
 import MascotBanner from "@/components/sections/MascotBanner";
+import PopularShows from "@/components/sections/PopularShows";
+import TopTalents from "@/components/sections/TopTalents";
 import Footer from "@/components/Footer";
 
 const HomePage = () => {

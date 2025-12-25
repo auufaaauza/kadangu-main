@@ -78,6 +78,20 @@ const TicketBookingPage = () => {
     }
   }, [showId]);
 
+  const [paymentMethod, setPaymentMethod] = useState("manual");
+
+  useEffect(() => {
+    // Load Midtrans Snap script
+    const script = document.createElement("script");
+    script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+    script.setAttribute("data-client-key", "YOUR_MIDTRANS_CLIENT_KEY"); // User to fill
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -108,19 +122,42 @@ const TicketBookingPage = () => {
           pertunjukan_id: show.id,
           ticket_category_id: selectedCategory.id,
           jumlah_tiket: quantity,
-          // Following fields are usually handled by backend auth user,
-          // but we can pass them if needed or just for logging
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
           notes: formData.notes,
+          payment_method: paymentMethod,
         };
 
         const response = await createTicketOrder(orderData);
-        if (response.success || response.booking) {
-          navigate("/payment-success", {
-            state: { booking: response.booking },
+
+        if (paymentMethod === "midtrans" && response.snap_token) {
+          window.snap.pay(response.snap_token, {
+            onSuccess: function (result) {
+              navigate("/payment-success", {
+                state: { booking: response.booking, mode: "event" },
+              });
+            },
+            onPending: function (result) {
+              navigate("/payment-success", {
+                state: { booking: response.booking, mode: "event" },
+              });
+            },
+            onError: function (result) {
+              alert("Payment failed!");
+              console.error(result);
+            },
+            onClose: function () {
+              alert("You closed the popup without finishing the payment");
+            },
           });
+        } else {
+          // Manual or success without snap
+          if (response.success || response.booking) {
+            navigate("/payment-success", {
+              state: { booking: response.booking, mode: "event" },
+            });
+          }
         }
       } catch (error) {
         console.error("Booking error:", error);
@@ -341,6 +378,72 @@ const TicketBookingPage = () => {
                     className="w-full px-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/20"
                     placeholder="Tambahkan catatan jika diperlukan"
                   />
+                </div>
+
+                {/* Payment Method */}
+                <div>
+                  <h3 className="font-semibold mb-4">Metode Pembayaran</h3>
+                  <div className="space-y-3">
+                    <label
+                      className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                        paymentMethod === "manual"
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="manual"
+                          checked={paymentMethod === "manual"}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                          className="w-5 h-5 text-primary focus:ring-primary"
+                        />
+                        <div>
+                          <p className="font-semibold">
+                            Transfer Bank (Manual)
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Transfer ke rekening admin
+                          </p>
+                        </div>
+                      </div>
+                      <CreditCard className="w-6 h-6 text-gray-400" />
+                    </label>
+
+                    <label
+                      className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                        paymentMethod === "midtrans"
+                          ? "border-primary bg-primary/5"
+                          : "border-border hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="midtrans"
+                          checked={paymentMethod === "midtrans"}
+                          onChange={(e) => setPaymentMethod(e.target.value)}
+                          className="w-5 h-5 text-primary focus:ring-primary"
+                        />
+                        <div>
+                          <p className="font-semibold">
+                            Online Payment (Midtrans)
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            QRIS, GoPay, Virtual Account, dll
+                          </p>
+                        </div>
+                      </div>
+                      <img
+                        src="https://docs.midtrans.com/asset/image/main/midtrans-logo.png"
+                        alt="Midtrans"
+                        className="h-6 object-contain"
+                      />
+                    </label>
+                  </div>
                 </div>
 
                 {/* Submit Button */}

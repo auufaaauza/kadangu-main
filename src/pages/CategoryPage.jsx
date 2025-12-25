@@ -48,31 +48,31 @@ const CategoryPage = () => {
     art: {
       title: "Seni Rupa",
       subtitle: "Seniman dan pelukis berbakat",
- 
+
       gradient: "from-teal-600 to-teal-700",
     },
     literature: {
       title: "Sastra",
       subtitle: "Penulis dan penyair profesional",
- 
+
       gradient: "from-teal-600 to-teal-700",
     },
     film: {
       title: "Film",
       subtitle: "Filmmaker dan videografer",
-  
+
       gradient: "from-teal-600 to-teal-700",
     },
     culture: {
       title: "Budaya",
       subtitle: "Pelestari budaya dan tradisi",
-  
+
       gradient: "from-teal-600 to-teal-700",
     },
     workshop: {
       title: "Workshop",
       subtitle: "Instruktur dan fasilitator workshop",
-    
+
       gradient: "from-teal-600 to-teal-700",
     },
   };
@@ -105,10 +105,6 @@ const CategoryPage = () => {
             talent.bio || talent.service_description || "Talent profesional",
         }));
 
-        // Debug: Log all talents
-        console.log("All talents:", allTalents);
-        console.log("Current category:", currentCategory.title);
-
         // Filter by category - flexible matching
         const filtered = allTalents.filter((talent) => {
           // Category matching - check multiple fields with partial match
@@ -138,26 +134,8 @@ const CategoryPage = () => {
           return matchesCategory && matchesSearch && matchesGenre;
         });
 
-        console.log("Filtered talents:", filtered);
-        console.log("Filter details:", {
-          total: allTalents.length,
-          filtered: filtered.length,
-          pageCategory: currentCategory.title,
-        });
-
-        // If no talents match, show all talents with warning
+        // If no talents match, show all talents
         if (filtered.length === 0 && allTalents.length > 0) {
-          console.warn(
-            `⚠️ No talents found for category "${currentCategory.title}". Showing all talents instead.`
-          );
-          console.log(
-            "Talent categories:",
-            allTalents.map((t) => ({
-              name: t.name,
-              category: t.category,
-              genre: t.genre,
-            }))
-          );
           setTalents(allTalents);
         } else {
           setTalents(filtered);

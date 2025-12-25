@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { CheckCircle, Calendar, MapPin, Clock } from "lucide-react";
+import { CheckCircle, Calendar, MapPin, Clock, Smartphone } from "lucide-react";
 import { formatRupiah } from "@/lib/currency";
 import { apiCall } from "@/lib/api";
 
@@ -157,6 +157,36 @@ Mohon infonya, terima kasih!`;
           </div>
 
           <div className="flex flex-col gap-3 pt-4">
+            {(booking.status === "confirmed" ||
+              booking.status === "completed" ||
+              booking.status === "paid") && (
+              <>
+                <div className="bg-gray-50 rounded-xl p-6 text-center border border-gray-200">
+                  <h3 className="font-semibold mb-4">Booking QR Code</h3>
+                  <div className="bg-white p-2 inline-block rounded-xl border-2 border-dashed border-gray-200 mb-4">
+                    <img
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
+                        booking.booking_code
+                      )}`}
+                      alt={`QR Code ${booking.booking_code}`}
+                      className="w-40 h-40 object-contain"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Tunjukkan kepada talent saat acara.
+                  </p>
+                </div>
+
+                <Link
+                  to={`/invoice/booking/${booking.id}`}
+                  target="_blank"
+                  className="w-full bg-white border border-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center shadow-sm"
+                >
+                  Download Invoice
+                </Link>
+              </>
+            )}
+
             <a
               href={waUrl}
               target="_blank"

@@ -141,24 +141,32 @@ const ProfilePage = () => {
 
   const getStatusBadge = (status) => {
     const styles = {
-      confirmed: "bg-green-100 text-green-700",
-      pending: "bg-yellow-100 text-yellow-700",
-      cancelled: "bg-red-100 text-red-700",
-      completed: "bg-blue-100 text-blue-700",
+      confirmed: "bg-green-100 text-green-700 border border-green-200",
+      paid: "bg-green-100 text-green-700 border border-green-200",
+      completed: "bg-blue-100 text-blue-700 border border-blue-200",
+      pending: "bg-yellow-50 text-yellow-700 border border-yellow-200",
+      cancelled: "bg-red-50 text-red-700 border border-red-200",
+      unavailable: "bg-gray-100 text-gray-600 border border-gray-200",
     };
+
     const labels = {
       confirmed: "Terkonfirmasi",
-      pending: "Menunggu",
-      cancelled: "Dibatalkan",
+      paid: "Lunas",
       completed: "Selesai",
+      pending: "Menunggu Pembayaran",
+      cancelled: "Dibatalkan",
+      unavailable: "Tidak Tersedia",
     };
+
+    const statusKey = status?.toLowerCase() || "pending";
+
     return (
       <span
-        className={`px-3 py-1 rounded-full text-xs font-medium ${
-          styles[status] || styles.pending
+        className={`px-3 py-1 rounded-full text-xs font-semibold ${
+          styles[statusKey] || styles.pending
         }`}
       >
-        {labels[status] || status}
+        {labels[statusKey] || status}
       </span>
     );
   };
@@ -324,43 +332,73 @@ const ProfilePage = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
+                      className="h-full"
                     >
                       <Card className="hover:shadow-md transition-shadow">
                         <CardContent className="p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
+                          <div className="flex flex-col md:flex-row gap-4 justify-between">
+                            {/* Left Info */}
+                            <div className="flex-1 space-y-3">
+                              {/* Meta Row */}
+                              <div className="flex items-center gap-3 text-sm text-gray-500">
                                 {order.type === "talent" ? (
-                                  <Package className="w-5 h-5 text-[hsl(var(--primary))]" />
+                                  <div className="flex items-center gap-1.5 text-pink-600 font-semibold bg-pink-50 px-2 py-0.5 rounded">
+                                    <Package className="w-3.5 h-3.5" />
+                                    <span>Booking Talent</span>
+                                  </div>
                                 ) : (
-                                  <TicketIcon className="w-5 h-5 text-[hsl(var(--accent))]" />
+                                  <div className="flex items-center gap-1.5 text-purple-600 font-semibold bg-purple-50 px-2 py-0.5 rounded">
+                                    <TicketIcon className="w-3.5 h-3.5" />
+                                    <span>Tiket Event</span>
+                                  </div>
                                 )}
-                                <h3 className="text-lg font-bold">
+                                <span className="text-gray-300">|</span>
+                                <div className="flex items-center gap-1.5">
+                                  <Calendar className="w-3.5 h-3.5" />
+                                  <span>
+                                    {new Date(order.date).toLocaleDateString(
+                                      "id-ID",
+                                      {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric",
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                      }
+                                    )}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Title & Description */}
+                              <div>
+                                <h3 className="text-lg font-bold text-gray-900 leading-tight mb-1">
                                   {order.title}
                                 </h3>
-                                {getStatusBadge(order.status)}
-                              </div>
-                              <p className="text-sm text-gray-600 mb-1">
-                                {order.type === "talent"
-                                  ? `Paket: ${order.package}`
-                                  : `Kategori: ${order.category}`}
-                              </p>
-                              <div className="flex items-center gap-2 text-sm text-gray-500">
-                                <Calendar className="w-4 h-4" />
-                                <span>
-                                  {new Date(order.date).toLocaleDateString(
-                                    "id-ID",
-                                    {
-                                      day: "numeric",
-                                      month: "long",
-                                      year: "numeric",
-                                    }
+                                <p className="text-gray-600 text-sm">
+                                  {order.type === "talent" ? (
+                                    <>
+                                      <span className="text-gray-400">
+                                        Paket:
+                                      </span>{" "}
+                                      {order.package}
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span className="text-gray-400">
+                                        Kategori:
+                                      </span>{" "}
+                                      {order.category}
+                                    </>
                                   )}
-                                </span>
+                                </p>
                               </div>
                             </div>
-                            <div className="text-right ml-4">
-                              <p className="text-xl font-bold text-[hsl(var(--primary))]">
+
+                            {/* Right Info (Status & Price) */}
+                            <div className="flex md:flex-col items-center md:items-end justify-between md:justify-start gap-3 md:gap-2 pt-2 md:pt-0 border-t md:border-t-0 border-dashed border-gray-200">
+                              {getStatusBadge(order.status)}
+                              <p className="text-xl font-bold text-primary mt-1">
                                 {formatRupiah(order.total)}
                               </p>
                             </div>
@@ -372,10 +410,7 @@ const ProfilePage = () => {
                                 if (order.type === "talent") {
                                   navigate(`/booking/${order.id}`);
                                 } else {
-                                  // For tickets, maybe redirect to invoice or show detail modal (future dev)
-                                  // For now, let's just log or maybe alert
-                                  // Or perhaps we can reuse payment-success page if it supports viewing by ID
-                                  // navigate(`/payment-success?order_id=${order.id}`);
+                                  navigate(`/order/ticket/${order.id}`);
                                 }
                               }}
                             >

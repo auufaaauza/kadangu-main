@@ -16,8 +16,7 @@ const InvoicePage = () => {
         if (type === "booking" || type === "talent") {
           endpoint = `/talent-bookings/${id}`;
         } else if (type === "ticket") {
-          // Placeholder for ticket invoice logic if needed
-          endpoint = `/event-ticket-orders/${id}`; // Adjust if needed
+          endpoint = `/event-ticket-orders/${id}`;
         }
 
         const response = await apiCall(endpoint);
@@ -54,7 +53,8 @@ const InvoicePage = () => {
   const isBooking = type === "booking" || type === "talent";
   const invoiceNumber = isBooking
     ? data.booking_code
-    : data.order_id || `TCK-${data.id}`;
+    : data.kode_booking || `TCK-${data.id}`;
+
   const date = new Date(data.created_at || new Date()).toLocaleDateString(
     "id-ID",
     {
@@ -69,16 +69,26 @@ const InvoicePage = () => {
 
   const itemName = isBooking
     ? `${data.talent?.name} - ${data.package?.name}`
-    : `${data.pertunjukan?.judul} - ${data.ticket_category?.name}`;
+    : `${data.pertunjukan?.judul} - ${
+        data.ticketCategories
+          ? data.ticketCategories?.nama
+          : data.ticket_category?.nama || data.ticket_category?.name
+      }`;
 
   const itemDescription = isBooking
     ? `Talent Booking on ${new Date(data.event_date).toLocaleDateString()}, ${
         data.event_time
       }`
-    : `Event Ticket`;
+    : `Event Ticket for ${new Date(
+        data.pertunjukan?.tanggal_pertunjukan
+      ).toLocaleDateString("id-ID", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })}`;
 
-  const amount = isBooking ? data.total_price : data.total_price;
-
+  const amount = isBooking ? data.total_price : data.total_harga;
   return (
     <div className="min-h-screen bg-gray-100 py-8 print:bg-white print:py-0">
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden print:shadow-none print:rounded-none">
@@ -136,6 +146,23 @@ const InvoicePage = () => {
                 Manual Transfer
               </p>
             </div>
+            {/* QR Code for Ticket */}
+            {!isBooking && (
+              <div className="text-right">
+                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">
+                  SCAN QR CODE
+                </h3>
+                <div className="inline-block p-2 border-2 border-dashed border-gray-200 rounded-lg">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(
+                      invoiceNumber
+                    )}`}
+                    alt="QR Code"
+                    className="w-24 h-24 object-contain"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Table */}

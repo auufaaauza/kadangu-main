@@ -58,13 +58,18 @@ export default function PaymentSuccessPage() {
                 <Home className="w-4 h-4 mr-2" />
                 Kembali ke Beranda
               </Button>
-
               {!isCommunity && (
                 <Button
                   size="lg"
                   variant="outline"
                   className="rounded-xl"
-                  onClick={() => navigate("/profile")}
+                  onClick={() => {
+                    if (location.state?.booking?.id) {
+                      navigate(`/order/ticket/${location.state.booking.id}`);
+                    } else {
+                      navigate("/profile");
+                    }
+                  }}
                 >
                   <Ticket className="w-4 h-4 mr-2" />
                   Lihat Tiket Saya
