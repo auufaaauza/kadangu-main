@@ -9,6 +9,8 @@ import {
   ArrowLeft,
   Check,
   AlertCircle,
+  Upload,
+  X,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { fetchShowById, createTicketOrder } from "@/lib/api";
@@ -24,6 +26,8 @@ const TicketBookingPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [paymentSettings, setPaymentSettings] = useState([]);
+  const [paymentProof, setPaymentProof] = useState(null);
   const [formData, setFormData] = useState({
     name: user?.name || "",
     email: user?.email || "",
@@ -80,6 +84,26 @@ const TicketBookingPage = () => {
 
   const [paymentMethod, setPaymentMethod] = useState("manual");
 
+  // Fetch payment settings
+  useEffect(() => {
+    const fetchPaymentSettings = async () => {
+      try {
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+          }/payment-settings`
+        );
+        const data = await response.json();
+        if (data.success) {
+          setPaymentSettings(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching payment settings:", error);
+      }
+    };
+    fetchPaymentSettings();
+  }, []);
+
   useEffect(() => {
     // Load Midtrans Snap script
     const script = document.createElement("script");
@@ -118,29 +142,51 @@ const TicketBookingPage = () => {
     if (validateForm()) {
       setSubmitting(true);
       try {
-        const orderData = {
-          pertunjukan_id: show.id,
-          ticket_category_id: selectedCategory.id,
-          jumlah_tiket: quantity,
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          notes: formData.notes,
-          payment_method: paymentMethod,
-        };
+        const formDataToSend = new FormData();
+        formDataToSend.append("pertunjukan_id", show.id);
+        formDataToSend.append("ticket_category_id", selectedCategory.id);
+        formDataToSend.append("jumlah_tiket", quantity);
+        formDataToSend.append("name", formData.name);
+        formDataToSend.append("email", formData.email);
+        formDataToSend.append("phone", formData.phone);
+        formDataToSend.append("notes", formData.notes);
+        formDataToSend.append("payment_method", paymentMethod);
 
-        const response = await createTicketOrder(orderData);
+        // Add payment proof if manual payment and file is selected
+        if (paymentMethod === "manual" && paymentProof) {
+          formDataToSend.append("payment_proof", paymentProof);
+        }
 
-        if (paymentMethod === "midtrans" && response.snap_token) {
-          window.snap.pay(response.snap_token, {
+        const token = localStorage.getItem("auth_token");
+        const response = await fetch(
+          `${
+            import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+          }/event-ticket-orders`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formDataToSend,
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Booking failed");
+        }
+
+        if (paymentMethod === "midtrans" && data.snap_token) {
+          window.snap.pay(data.snap_token, {
             onSuccess: function (result) {
               navigate("/payment-success", {
-                state: { booking: response.booking, mode: "event" },
+                state: { booking: data.booking, mode: "event" },
               });
             },
             onPending: function (result) {
               navigate("/payment-success", {
-                state: { booking: response.booking, mode: "event" },
+                state: { booking: data.booking, mode: "event" },
               });
             },
             onError: function (result) {
@@ -153,16 +199,18 @@ const TicketBookingPage = () => {
           });
         } else {
           // Manual or success without snap
-          if (response.success || response.booking) {
+          if (data.success || data.booking) {
             navigate("/payment-success", {
-              state: { booking: response.booking, mode: "event" },
+              state: { booking: data.booking, mode: "event" },
             });
           }
         }
       } catch (error) {
         console.error("Booking error:", error);
         setErrors({
-          submit: "Terjadi kesalahan saat memesan tiket. Silakan coba lagi.",
+          submit:
+            error.message ||
+            "Terjadi kesalahan saat memesan tiket. Silakan coba lagi.",
         });
       } finally {
         setSubmitting(false);
@@ -444,6 +492,137 @@ const TicketBookingPage = () => {
                       />
                     </label>
                   </div>
+
+                  {/* Payment Details for Manual Transfer */}
+                  {paymentMethod === "manual" && paymentSettings.length > 0 && (
+                    <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                      <h4 className="font-semibold mb-3 text-blue-900">
+                        Detail Pembayaran
+                      </h4>
+                      <div className="space-y-4">
+                        {paymentSettings
+                          .filter((ps) => ps.type === "qris")
+                          .map((qris) => (
+                            <div
+                              key={qris.id}
+                              className="bg-white p-3 rounded-lg"
+                            >
+                              <p className="font-medium mb-2">{qris.name}</p>
+                              {qris.qris_image && (
+                                <img
+                                  src={qris.qris_image}
+                                  alt="QRIS"
+                                  className="w-48 h-48 object-contain mx-auto border rounded"
+                                />
+                              )}
+                              {qris.instructions && (
+                                <p className="text-sm text-muted-foreground mt-2">
+                                  {qris.instructions}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+
+                        {paymentSettings
+                          .filter((ps) => ps.type === "bank_account")
+                          .map((bank) => (
+                            <div
+                              key={bank.id}
+                              className="bg-white p-3 rounded-lg space-y-1"
+                            >
+                              <p className="font-medium">{bank.name}</p>
+                              <div className="text-sm space-y-1">
+                                <p>
+                                  <span className="text-muted-foreground">
+                                    Bank:
+                                  </span>{" "}
+                                  <span className="font-medium">
+                                    {bank.bank_name}
+                                  </span>
+                                </p>
+                                <p>
+                                  <span className="text-muted-foreground">
+                                    No. Rekening:
+                                  </span>{" "}
+                                  <span className="font-mono font-medium">
+                                    {bank.account_number}
+                                  </span>
+                                </p>
+                                <p>
+                                  <span className="text-muted-foreground">
+                                    Atas Nama:
+                                  </span>{" "}
+                                  <span className="font-medium">
+                                    {bank.account_holder}
+                                  </span>
+                                </p>
+                                {bank.instructions && (
+                                  <p className="text-muted-foreground mt-2">
+                                    {bank.instructions}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Payment Proof Upload */}
+                  {paymentMethod === "manual" && (
+                    <div className="mt-4">
+                      <label className="block text-sm font-medium mb-2">
+                        Upload Bukti Pembayaran (Opsional)
+                      </label>
+                      <div className="border-2 border-dashed border-border rounded-lg p-4">
+                        {!paymentProof ? (
+                          <label className="flex flex-col items-center gap-2 cursor-pointer">
+                            <Upload className="w-8 h-8 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">
+                              Klik untuk upload bukti transfer
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              Format: JPG, PNG, PDF (Max 2MB)
+                            </span>
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,application/pdf"
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file && file.size <= 2 * 1024 * 1024) {
+                                  setPaymentProof(file);
+                                } else if (file) {
+                                  alert("Ukuran file maksimal 2MB");
+                                  e.target.value = "";
+                                }
+                              }}
+                              className="hidden"
+                            />
+                          </label>
+                        ) : (
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Check className="w-5 h-5 text-green-600" />
+                              <span className="text-sm font-medium">
+                                {paymentProof.name}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setPaymentProof(null)}
+                              className="text-red-500 hover:text-red-700"
+                            >
+                              <X className="w-5 h-5" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2">
+                        Upload bukti pembayaran sekarang atau nanti di halaman
+                        pesanan
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Submit Button */}

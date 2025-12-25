@@ -9,6 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 // --- Pages: Core ---
 import HomePage from "@/pages/HomePage";
 import NewsPage from "@/pages/NewsPage";
+import NewsDetailPage from "@/pages/NewsDetailPage";
 import ShowsPage from "@/pages/ShowsPage";
 import CategoryPage from "@/pages/CategoryPage";
 import TicketBookingPage from "@/pages/TicketBookingPage";
@@ -47,6 +48,7 @@ export default function App() {
             <Route path="/explore" element={<BrowsePage />} />
             {/* News */}
             <Route path="/news" element={<NewsPage />} />
+            <Route path="/news/:id" element={<NewsDetailPage />} />
             {/* Shows/Pertunjukan */}
             <Route path="/shows" element={<ShowsPage />} />
             <Route path="/shows/:showId/book" element={<TicketBookingPage />} />

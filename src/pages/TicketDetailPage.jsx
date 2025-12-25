@@ -15,11 +15,13 @@ const TicketDetailPage = () => {
   const { id } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await apiCall(`/event-ticket-orders/${id}`);
+        const response = await apiCall(`/v1/bookings/${id}`);
         setOrder(response);
       } catch (error) {
         console.error("Failed to load ticket order:", error);
@@ -32,6 +34,53 @@ const TicketDetailPage = () => {
       fetchOrder();
     }
   }, [id]);
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile && selectedFile.size <= 5 * 1024 * 1024) {
+      setFile(selectedFile);
+    } else if (selectedFile) {
+      alert("Ukuran file maksimal 5MB");
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("payment_proof", file);
+
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+        }/v1/bookings/${id}/upload-proof`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("auth_token")}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (response.ok) {
+        alert("Bukti pembayaran berhasil diupload!");
+        // Refresh order data
+        const updatedOrder = await apiCall(`/v1/bookings/${id}`);
+        setOrder(updatedOrder);
+        setFile(null);
+      } else {
+        throw new Error("Upload failed");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Gagal upload bukti pembayaran. Silakan coba lagi.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -176,8 +225,89 @@ const TicketDetailPage = () => {
             </div>
           </div>
 
-          {/* QR Code & Actions */}
+          {/* Right Column: Actions & Payment */}
           <div className="space-y-6">
+            {/* Payment Proof Section for Pending Orders */}
+            {order.status === "pending" &&
+              (!order.payment_method || order.payment_method === "manual") && (
+                <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+                  <h3 className="font-semibold mb-4 text-center">Pembayaran</h3>
+
+                  {/* Bank Info */}
+                  <div className="bg-blue-50 p-4 rounded-lg mb-6 text-sm">
+                    <p className="font-semibold text-blue-800 mb-2">
+                      Silakan transfer ke:
+                    </p>
+                    <div className="space-y-1 text-blue-900">
+                      <p>
+                        Bank BCA:{" "}
+                        <span className="font-mono font-bold">1234567890</span>
+                      </p>
+                      <p>A.n: Kadangu Official</p>
+                      <div className="mt-2 text-xs text-blue-700">
+                        *Mohon upload bukti transfer di bawah ini untuk
+                        verifikasi.
+                      </div>
+                    </div>
+                  </div>
+
+                  {!order.payment_proof ? (
+                    <div className="space-y-4">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors relative">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          disabled={uploading}
+                        />
+                        <div className="flex flex-col items-center gap-2">
+                          <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                            <Smartphone className="w-5 h-5 text-gray-500" />
+                          </div>
+                          <p className="text-sm font-medium text-gray-700">
+                            {file ? file.name : "Klik untuk upload bukti bayar"}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Format: JPG, PNG (Max 5MB)
+                          </p>
+                        </div>
+                      </div>
+
+                      {file && (
+                        <button
+                          onClick={handleUpload}
+                          disabled={uploading}
+                          className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center justify-center gap-2"
+                        >
+                          {uploading ? (
+                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          ) : (
+                            <>
+                              <CheckCircle className="w-4 h-4" />
+                              Kirim Bukti Pembayaran
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-yellow-50 p-4 rounded-lg text-center">
+                      <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Clock className="w-6 h-6 text-yellow-600" />
+                      </div>
+                      <h4 className="font-semibold text-yellow-800 mb-1">
+                        Menunggu Verifikasi
+                      </h4>
+                      <p className="text-sm text-yellow-700">
+                        Bukti pembayaran Anda sedang dicek oleh admin. Mohon
+                        tunggu 1x24 jam.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+
             {(order.status === "paid" || order.status === "confirmed") && (
               <div className="bg-white rounded-xl shadow-sm p-6 text-center border border-gray-100">
                 <h3 className="font-semibold mb-4">Scan QR Code</h3>
@@ -214,7 +344,7 @@ const TicketDetailPage = () => {
 
               <Link
                 to="/profile"
-                className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium flex items-center justify-center shadow-sm"
+                className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium flex items-center justify-center shadow-sm"
               >
                 Kembali ke Profil
               </Link>
