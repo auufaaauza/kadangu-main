@@ -61,6 +61,8 @@ const TicketBookingPage = () => {
             : "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
           category:
             showData.artist_group?.nama || showData.artistGroup?.nama || "Seni",
+          biayaLayanan: parseFloat(showData.biaya_layanan || 0),
+          ppn: parseFloat(showData.ppn || 0),
           categories: (showData.ticket_categories || []).map((cat) => ({
             id: cat.id,
             name: cat.nama,
@@ -89,8 +91,7 @@ const TicketBookingPage = () => {
     const fetchPaymentSettings = async () => {
       try {
         const response = await fetch(
-          `${
-            import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+          `${import.meta.env.VITE_API_URL || "http://localhost:8000/api"
           }/payment-settings`
         );
         const data = await response.json();
@@ -159,8 +160,7 @@ const TicketBookingPage = () => {
 
         const token = localStorage.getItem("auth_token");
         const response = await fetch(
-          `${
-            import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+          `${import.meta.env.VITE_API_URL || "http://localhost:8000/api"
           }/event-ticket-orders`,
           {
             method: "POST",
@@ -218,7 +218,13 @@ const TicketBookingPage = () => {
     }
   };
 
-  const totalPrice = selectedCategory ? selectedCategory.price * quantity : 0;
+  // Calculate prices
+  const subtotal = selectedCategory ? selectedCategory.price * quantity : 0;
+  const serviceFeePercent = show ? show.biayaLayanan : 0; // in percentage
+  const taxPercent = show ? show.ppn : 0; // in percentage
+  const serviceFee = (subtotal * serviceFeePercent) / 100;
+  const tax = (subtotal * taxPercent) / 100;
+  const totalPrice = subtotal + serviceFee + tax;
 
   if (loading) {
     return (
@@ -264,9 +270,8 @@ const TicketBookingPage = () => {
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 rounded-lg border ${
-                          errors.name ? "border-red-500" : "border-border"
-                        } focus:outline-none focus:ring-2 focus:ring-primary/20`}
+                        className={`w-full px-4 py-3 rounded-lg border ${errors.name ? "border-red-500" : "border-border"
+                          } focus:outline-none focus:ring-2 focus:ring-primary/20`}
                         placeholder="Masukkan nama lengkap"
                       />
                       {errors.name && (
@@ -286,9 +291,8 @@ const TicketBookingPage = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 rounded-lg border ${
-                          errors.email ? "border-red-500" : "border-border"
-                        } focus:outline-none focus:ring-2 focus:ring-primary/20`}
+                        className={`w-full px-4 py-3 rounded-lg border ${errors.email ? "border-red-500" : "border-border"
+                          } focus:outline-none focus:ring-2 focus:ring-primary/20`}
                         placeholder="email@example.com"
                       />
                       {errors.email && (
@@ -308,9 +312,8 @@ const TicketBookingPage = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className={`w-full px-4 py-3 rounded-lg border ${
-                          errors.phone ? "border-red-500" : "border-border"
-                        } focus:outline-none focus:ring-2 focus:ring-primary/20`}
+                        className={`w-full px-4 py-3 rounded-lg border ${errors.phone ? "border-red-500" : "border-border"
+                          } focus:outline-none focus:ring-2 focus:ring-primary/20`}
                         placeholder="08xxxxxxxxxx"
                       />
                       {errors.phone && (
@@ -339,22 +342,20 @@ const TicketBookingPage = () => {
                           onClick={() =>
                             isAvailable && setSelectedCategory(category)
                           }
-                          className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                            selectedCategory?.id === category.id
-                              ? "border-primary bg-primary/5"
-                              : isAvailable
+                          className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${selectedCategory?.id === category.id
+                            ? "border-primary bg-primary/5"
+                            : isAvailable
                               ? "border-border hover:border-primary/50"
                               : "border-border bg-gray-50 cursor-not-allowed opacity-60"
-                          }`}
+                            }`}
                         >
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                               <div
-                                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                                  selectedCategory?.id === category.id
-                                    ? "border-primary bg-primary"
-                                    : "border-gray-300"
-                                }`}
+                                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedCategory?.id === category.id
+                                  ? "border-primary bg-primary"
+                                  : "border-gray-300"
+                                  }`}
                               >
                                 {selectedCategory?.id === category.id && (
                                   <Check className="w-3 h-3 text-white" />
@@ -433,11 +434,10 @@ const TicketBookingPage = () => {
                   <h3 className="font-semibold mb-4">Metode Pembayaran</h3>
                   <div className="space-y-3">
                     <label
-                      className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                        paymentMethod === "manual"
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-gray-300"
-                      }`}
+                      className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all ${paymentMethod === "manual"
+                        ? "border-primary bg-primary/5"
+                        : "border-border hover:border-gray-300"
+                        }`}
                     >
                       <div className="flex items-center gap-3">
                         <input
@@ -461,25 +461,25 @@ const TicketBookingPage = () => {
                     </label>
 
                     <label
-                      className={`flex items-center justify-between p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                        paymentMethod === "midtrans"
-                          ? "border-primary bg-primary/5"
-                          : "border-border hover:border-gray-300"
-                      }`}
+                      className="flex items-center justify-between p-4 rounded-lg border-2 bg-gray-50 opacity-60 cursor-not-allowed"
                     >
                       <div className="flex items-center gap-3">
                         <input
                           type="radio"
                           name="paymentMethod"
                           value="midtrans"
-                          checked={paymentMethod === "midtrans"}
-                          onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="w-5 h-5 text-primary focus:ring-primary"
+                          disabled
+                          className="w-5 h-5 text-gray-400 cursor-not-allowed"
                         />
                         <div>
-                          <p className="font-semibold">
-                            Online Payment (Midtrans)
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold text-gray-500">
+                              Online Payment (Midtrans)
+                            </p>
+                            <span className="bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-0.5 rounded">
+                              Maintenance
+                            </span>
+                          </div>
                           <p className="text-sm text-muted-foreground">
                             QRIS, GoPay, Virtual Account, dll
                           </p>
@@ -488,7 +488,7 @@ const TicketBookingPage = () => {
                       <img
                         src="https://docs.midtrans.com/asset/image/main/midtrans-logo.png"
                         alt="Midtrans"
-                        className="h-6 object-contain"
+                        className="h-6 object-contain opacity-50"
                       />
                     </label>
                   </div>
@@ -699,6 +699,32 @@ const TicketBookingPage = () => {
                     <span className="text-muted-foreground">Jumlah</span>
                     <span className="font-medium">{quantity} tiket</span>
                   </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="font-medium">
+                      {formatRupiah(subtotal)}
+                    </span>
+                  </div>
+                  {serviceFee > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        Biaya Layanan ({serviceFeePercent}%)
+                      </span>
+                      <span className="font-medium">
+                        {formatRupiah(serviceFee)}
+                      </span>
+                    </div>
+                  )}
+                  {tax > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        PPN ({taxPercent}%)
+                      </span>
+                      <span className="font-medium">
+                        {formatRupiah(tax)}
+                      </span>
+                    </div>
+                  )}
                   <div className="border-t border-border pt-3 flex justify-between">
                     <span className="font-semibold">Total</span>
                     <span className="text-xl font-bold text-primary">

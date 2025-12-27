@@ -124,6 +124,16 @@ const TalentDetailPage = () => {
     setWishlistLoading(false);
   };
 
+  // Handle book talent with login check
+  const handleBookTalent = () => {
+    if (!isAuthenticated) {
+      alert('Anda harus login terlebih dahulu untuk booking talent!');
+      navigate('/login', { state: { from: `/talent/${talent.id}/book` } });
+      return;
+    }
+    navigate(`/talent/${talent.id}/book`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -174,9 +184,8 @@ const TalentDetailPage = () => {
           <button
             onClick={toggleWishlist}
             disabled={wishlistLoading}
-            className={`bg-white/90 backdrop-blur-sm p-3 rounded-full hover:bg-white transition-all ${
-              isInWishlist ? "text-red-500" : "text-gray-700"
-            } ${wishlistLoading ? "opacity-50 cursor-not-allowed" : ""}`}
+            className={`bg-white/90 backdrop-blur-sm p-3 rounded-full hover:bg-white transition-all ${isInWishlist ? "text-red-500" : "text-gray-700"
+              } ${wishlistLoading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
             <Heart
               className={`w-5 h-5 ${isInWishlist ? "fill-current" : ""}`}
@@ -253,11 +262,10 @@ const TalentDetailPage = () => {
                     <div
                       key={pkg.id}
                       onClick={() => setSelectedPackage(pkg)}
-                      className={`p-5 rounded-lg border-2 cursor-pointer transition-all ${
-                        selectedPackage?.id === pkg.id
+                      className={`p-5 rounded-lg border-2 cursor-pointer transition-all ${selectedPackage?.id === pkg.id
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
@@ -339,7 +347,7 @@ const TalentDetailPage = () => {
                   </div>
 
                   <button
-                    onClick={() => navigate(`/talent/${talent.id}/book`)}
+                    onClick={handleBookTalent}
                     className="w-full bg-primary text-white py-4 rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2"
                   >
                     Booking Sekarang

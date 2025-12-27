@@ -38,25 +38,44 @@ const ShowsPage = () => {
           search: searchQuery || undefined,
         });
 
-        const showsData = (response.data || response).map((show) => ({
-          id: show.id,
-          title: show.judul,
-          category: show.artist_group?.nama || show.artistGroup?.nama || "Seni",
-          image: show.gambar
-            ? `http://localhost:8000/storage/${show.gambar}`
-            : "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
-          date: show.tanggal_pertunjukan,
-          time: new Date(show.tanggal_pertunjukan).toLocaleTimeString("id-ID", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          location: show.lokasi,
-          price: show.ticket_categories?.[0]?.harga || show.harga || 100000,
-          quota: show.kuota || 0,
-          sold: show.kuota - show.kuota_tersisa || 0,
-          rating: show.rating || 0,
-          description: show.deskripsi || "Pertunjukan seni budaya",
-        }));
+        const showsData = (response.data || response).map((show) => {
+          // Get price: prioritize harga field, then ticket categories
+          let price = 100000; // default fallback
+
+          // First try to get from show.harga
+          if (show.harga && show.harga > 0) {
+            price = show.harga;
+          }
+          // If harga is 0 or null, try ticket categories
+          else if (show.ticket_categories && show.ticket_categories.length > 0) {
+            const validPrices = show.ticket_categories
+              .map(cat => cat.harga)
+              .filter(p => p > 0);
+            if (validPrices.length > 0) {
+              price = Math.min(...validPrices);
+            }
+          }
+
+          return {
+            id: show.id,
+            title: show.judul,
+            category: show.artist_group?.nama || show.artistGroup?.nama || "Seni",
+            image: show.gambar
+              ? `http://localhost:8000/storage/${show.gambar}`
+              : "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800",
+            date: show.tanggal_pertunjukan,
+            time: new Date(show.tanggal_pertunjukan).toLocaleTimeString("id-ID", {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            location: show.lokasi,
+            price: price,
+            quota: show.kuota || 0,
+            sold: show.kuota - show.kuota_tersisa || 0,
+            rating: show.rating || 0,
+            description: show.deskripsi || "Pertunjukan seni budaya",
+          };
+        });
 
         setShows(showsData);
       } catch (err) {
@@ -147,11 +166,10 @@ const ShowsPage = () => {
                     <button
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className={`px-4 py-2 rounded-lg transition-all ${
-                        selectedCategory === category
-                          ? "bg-primary text-white"
-                          : "bg-gray-100 hover:bg-gray-200"
-                      }`}
+                      className={`px-4 py-2 rounded-lg transition-all ${selectedCategory === category
+                        ? "bg-primary text-white"
+                        : "bg-gray-100 hover:bg-gray-200"
+                        }`}
                     >
                       {category === "all" ? "Semua" : category}
                     </button>
@@ -240,7 +258,7 @@ const ShowsPage = () => {
                   <div className="flex items-center justify-between pt-4 border-t border-border">
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Mulai dari
+                        Harga Tiket
                       </p>
                       <p className="text-xl font-bold text-primary">
                         {formatRupiah(show.price)}

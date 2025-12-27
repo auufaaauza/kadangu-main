@@ -79,6 +79,16 @@ const ShowDetailPage = () => {
     }
   }, [showId]);
 
+  // Handle buy ticket with login check
+  const handleBuyTicket = () => {
+    if (!isAuthenticated) {
+      alert('Anda harus login terlebih dahulu untuk membeli tiket!');
+      navigate('/login', { state: { from: `/shows/${show.id}/book` } });
+      return;
+    }
+    navigate(`/shows/${show.id}/book`);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -307,7 +317,7 @@ const ShowDetailPage = () => {
               </div>
 
               <button
-                onClick={() => navigate(`/shows/${show.id}/book`)}
+                onClick={handleBuyTicket}
                 className="w-full bg-primary text-white py-4 rounded-lg hover:bg-primary/90 transition-colors font-semibold flex items-center justify-center gap-2"
               >
                 <Ticket className="w-5 h-5" />

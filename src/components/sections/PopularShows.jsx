@@ -17,7 +17,26 @@ const PopularShows = () => {
         const response = await apiCall(
           "/pertunjukan?sort_by=created_at&sort_order=desc&per_page=6"
         );
-        setShows(response.data || []);
+        const showsData = (response.data || []).map(show => {
+          // Get price: prioritize harga field, then ticket categories
+          let price = 100000; // default fallback
+
+          // First try to get from show.harga
+          if (show.harga && show.harga > 0) {
+            price = show.harga;
+          }
+          // If harga is 0 or null, try ticket categories
+          else if (show.ticket_categories && show.ticket_categories.length > 0) {
+            const validPrices = show.ticket_categories
+              .map(cat => cat.harga)
+              .filter(p => p > 0);
+            if (validPrices.length > 0) {
+              price = Math.min(...validPrices);
+            }
+          }
+          return { ...show, price };
+        });
+        setShows(showsData);
       } catch (error) {
         console.error("Error fetching shows:", error);
       } finally {
@@ -78,7 +97,9 @@ const PopularShows = () => {
                 <div
                   className="absolute inset-0 bg-cover bg-center"
                   style={{
-                    backgroundImage: `url(http://localhost:8000/storage/${show.banner})`,
+                    backgroundImage: show.gambar
+                      ? `url(http://localhost:8000/storage/${show.gambar})`
+                      : `url(https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=800)`,
                   }}
                   data-swiper-parallax="-30%"
                   data-swiper-parallax-scale="1.25"
@@ -139,10 +160,10 @@ const PopularShows = () => {
                   <div className="flex items-center justify-between border-t border-white/10 pt-4">
                     <div>
                       <p className="text-[10px] uppercase text-gray-400">
-                        Mulai dari
+                        Harga Tiket
                       </p>
                       <span className="text-lg font-bold">
-                        Rp {new Intl.NumberFormat("id-ID").format(show.harga)}
+                        Rp {new Intl.NumberFormat("id-ID").format(show.price)}
                       </span>
                     </div>
 
