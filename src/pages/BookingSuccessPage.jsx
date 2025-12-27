@@ -68,7 +68,7 @@ Total: ${formatRupiah(booking.total_price)}
 
 Mohon diproses ya, terima kasih!`;
 
-  const waUrl = `https://wa.me/6285179616683?text=${encodeURIComponent(
+  const waUrl = `https://wa.me/6282214459606?text=${encodeURIComponent(
     waMessage
   )}`;
 

@@ -64,7 +64,7 @@ Status: ${booking.status}
 
 Mohon infonya, terima kasih!`;
 
-  const waUrl = `https://wa.me/6285179616683?text=${encodeURIComponent(
+  const waUrl = `https://wa.me/6282214459606?text=${encodeURIComponent(
     waMessage
   )}`;
 
@@ -114,13 +114,12 @@ Mohon infonya, terima kasih!`;
               <div className="space-y-1">
                 <span className="text-muted-foreground">Status</span>
                 <span
-                  className={`inline-block px-2 py-0.5 rounded text-xs font-medium capitalize ${
-                    booking.status === "confirmed"
+                  className={`inline-block px-2 py-0.5 rounded text-xs font-medium capitalize ${booking.status === "confirmed"
                       ? "bg-green-100 text-green-800"
                       : booking.status === "pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
+                        ? "bg-yellow-100 text-yellow-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
                 >
                   {booking.status}
                 </span>
@@ -160,32 +159,32 @@ Mohon infonya, terima kasih!`;
             {(booking.status === "confirmed" ||
               booking.status === "completed" ||
               booking.status === "paid") && (
-              <>
-                <div className="bg-gray-50 rounded-xl p-6 text-center border border-gray-200">
-                  <h3 className="font-semibold mb-4">Booking QR Code</h3>
-                  <div className="bg-white p-2 inline-block rounded-xl border-2 border-dashed border-gray-200 mb-4">
-                    <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
-                        booking.booking_code
-                      )}`}
-                      alt={`QR Code ${booking.booking_code}`}
-                      className="w-40 h-40 object-contain"
-                    />
+                <>
+                  <div className="bg-gray-50 rounded-xl p-6 text-center border border-gray-200">
+                    <h3 className="font-semibold mb-4">Booking QR Code</h3>
+                    <div className="bg-white p-2 inline-block rounded-xl border-2 border-dashed border-gray-200 mb-4">
+                      <img
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
+                          booking.booking_code
+                        )}`}
+                        alt={`QR Code ${booking.booking_code}`}
+                        className="w-40 h-40 object-contain"
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Tunjukkan kepada talent saat acara.
+                    </p>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Tunjukkan kepada talent saat acara.
-                  </p>
-                </div>
 
-                <Link
-                  to={`/invoice/booking/${booking.id}`}
-                  target="_blank"
-                  className="w-full bg-white border border-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center shadow-sm"
-                >
-                  Download Invoice
-                </Link>
-              </>
-            )}
+                  <Link
+                    to={`/invoice/booking/${booking.id}`}
+                    target="_blank"
+                    className="w-full bg-white border border-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-50 transition-colors font-medium flex items-center justify-center shadow-sm"
+                  >
+                    Download Invoice
+                  </Link>
+                </>
+              )}
 
             <a
               href={waUrl}
